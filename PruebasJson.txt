@@ -21,3 +21,20 @@ PAYLOAD
 				}
 			]
 	}
+	
+Prueba para realizar compra
+URL
+	http://localhost:8080/jaxrsWebEjb-web/rest/productos/compra
+	
+PAYLOAD
+	{
+		"descripcion":"Compra de productos varios",
+		"proveedor_id":0,
+		"compra_detalle":
+			[
+				{
+					"cantidad":2,
+					"producto_id":0
+				}
+			]
+	}

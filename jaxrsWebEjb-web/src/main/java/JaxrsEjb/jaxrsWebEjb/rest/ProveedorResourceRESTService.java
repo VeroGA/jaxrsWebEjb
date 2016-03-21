@@ -15,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -25,6 +26,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import JaxrsEjb.jaxrsWebEjb.data.ProveedorRepository;
+import JaxrsEjb.jaxrsWebEjb.model.Cliente;
 import JaxrsEjb.jaxrsWebEjb.model.Proveedor;
 import JaxrsEjb.jaxrsWebEjb.service.ProveedorServices;
 
@@ -92,6 +94,18 @@ public class ProveedorResourceRESTService {
 
         return builder.build();
     }
+    
+	@DELETE
+	@Path("/{id:[0-9][0-9]*}")
+	public void deleteProveedorById(@PathParam("id") long id) throws Exception {
+		//Response.ResponseBuilder builder = null;
+		Proveedor proveedor = repository.findById(id);
+		if (proveedor == null) {
+			throw new WebApplicationException(Response.Status.NOT_FOUND);
+		}
+		registration.deleteProveedor(proveedor);
+		Response.accepted();
+	}
 
     private void validateProveedor(Proveedor proveedor) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.

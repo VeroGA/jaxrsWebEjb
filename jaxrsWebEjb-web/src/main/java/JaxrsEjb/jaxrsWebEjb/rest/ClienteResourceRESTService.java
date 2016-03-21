@@ -125,7 +125,7 @@ public class ClienteResourceRESTService {
 	@DELETE
 	@Path("/{id:[0-9][0-9]*}")
 	public void deleteClienteById(@PathParam("id") long id) throws Exception {
-		Response.ResponseBuilder builder = null;
+		//Response.ResponseBuilder builder = null;
 		Cliente cliente = repository.findById(id);
 		if (cliente == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);

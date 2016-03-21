@@ -1,0 +1,23 @@
+Pruebas para realizar pagos
+URL
+	http://localhost:8080/jaxrsWebEjb-web/rest/clientes/0/venta/0/pago
+	
+PAYLOAD
+	{"monto":7000, "observacion":"pago por venta de prueba"}
+	
+Prueba para realizar venta
+URL
+	http://localhost:8080/jaxrsWebEjb-web/rest/productos/venta
+	
+PAYLOAD
+	{
+		"descripcion":"Venta de productos varios",
+		"cliente_id":0,
+		"venta_detalle":
+			[
+				{
+					"cantidad":1,
+					"producto_id":0
+				}
+			]
+	}

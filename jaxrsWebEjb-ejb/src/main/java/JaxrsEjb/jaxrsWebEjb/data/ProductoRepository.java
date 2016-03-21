@@ -24,7 +24,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
-import JaxrsEjb.jaxrsWebEjb.model.Producto;;
+import JaxrsEjb.jaxrsWebEjb.model.Producto;
 
 @ApplicationScoped
 public class ProductoRepository {

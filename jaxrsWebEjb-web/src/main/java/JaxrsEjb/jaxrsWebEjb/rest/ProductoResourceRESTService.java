@@ -168,8 +168,7 @@ public class ProductoResourceRESTService {
 	}
 	
 	@POST
-	@Path("/venta") // aca se debe recibir un pago para
-											// ralizarse en json
+	@Path("/venta")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response realizarVenta(VentaDummy ventadummy) {

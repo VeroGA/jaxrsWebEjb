@@ -114,13 +114,14 @@ public class ProductoServices {
 		try {
 			ventaMasiva(ventad);
 		} catch (Exception e) {
+			log.info(e.getMessage());
 			//context.setRollbackOnly();
 		}
 
 		log.info("Venta realizada exitosamente!!.");
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void ventaMasiva(VentaDummy ventad) throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
 		log.info("Se realizara la venta Masiva en el ProductoServices de la venta: " + ventad.getDescripcion());
 
@@ -138,7 +139,7 @@ public class ProductoServices {
 
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void venderProducto(Venta venta, Producto producto, Integer cantidad)
 			throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
 		System.out.println("Vendiendo producto: " + producto.getNombre());
@@ -167,19 +168,19 @@ public class ProductoServices {
 		}
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Venta guardarVenta(VentaDummy ventad) throws Exception {
 		log.info("Guardando la venta " + ventad.getDescripcion() + "...");
 
 		Cliente cliente = clienteRepository.findById(ventad.getCliente_id());
 		Venta venta = new Venta(ventad.getDescripcion(), cliente, 0);
 		venta = em.merge(venta);
-		em.flush();
+		//em.flush();
 		log.info("Transaccion exitosa!!.");
 		return venta;
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void guardarVentaDetalle(VentaDetalle ventadetalle) throws Exception {
 		log.info("Guardando la venta detalle del producto: " + ventadetalle.getProducto().getNombre()
 				+ "... con cantidad: " + ventadetalle.getCantidad() + "...");
@@ -190,7 +191,7 @@ public class ProductoServices {
 		log.info("Transaccion exitosa!!.");
 	}
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void guardarProductoDuplicado(Producto producto) throws Exception {
 		// log.info("Guardando producto duplicado: " + producto.getNombre() +
 		// "... con cantidad: " + cantidad + "...");

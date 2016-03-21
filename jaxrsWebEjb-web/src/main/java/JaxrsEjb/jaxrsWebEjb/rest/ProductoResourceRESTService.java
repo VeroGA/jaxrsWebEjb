@@ -47,6 +47,8 @@ import JaxrsEjb.jaxrsWebEjb.model.Producto;
 import JaxrsEjb.jaxrsWebEjb.service.ProductoServices;
 import JaxrsEjb.jaxrsWebEjb.model.Venta;
 import JaxrsEjb.jaxrsWebEjb.data.VentaRepository;
+import JaxrsEjb.jaxrsWebEjb.dummies.CompraDummy;
+import JaxrsEjb.jaxrsWebEjb.dummies.DireccionDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDummy;
 import JaxrsEjb.jaxrsWebEjb.model.Pago;
 
@@ -160,13 +162,13 @@ public class ProductoResourceRESTService {
 	public boolean nombreAlreadyExists(String nombre) {
 		Producto producto = null;
 		try {
-			producto = productoRepository.findByName(nombre);
+			// producto = productoRepository.findByName(nombre);
 		} catch (NoResultException e) {
 			// ignore
 		}
 		return producto != null;
 	}
-	
+
 	@POST
 	@Path("/venta")
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -177,12 +179,63 @@ public class ProductoResourceRESTService {
 
 		try {
 
-			log.info("Se realiza la venta: " + ventadummy.getDescripcion() );
+			log.info("Se realiza la venta: " + ventadummy.getDescripcion());
 
 			productoServices.realizarVenta(ventadummy);
 
+			builder = Response.ok();
+		} catch (Exception e) {
+			// Handle generic exceptions
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
+	}
+
+	@POST
+	@Path("/compra")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response realizarCompra(CompraDummy compradummy) {
+
+		Response.ResponseBuilder builder = null;
+
+		try {
+
+			log.info("Se realiza la compra: " + compradummy.getDescripcion());
+
+			productoServices.realizarCompra(compradummy);
+
 			// Create an "ok" response
 			builder = Response.ok();
+		} catch (Exception e) {
+			// Handle generic exceptions
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
+	}
+
+	@POST
+	@Path("/masivos")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response realizarCargaProductos(DireccionDummy direccionDummy) {
+
+		Response.ResponseBuilder builder = null;
+
+		try {
+
+			log.info("Se realiza la carga masiva desde: " + direccionDummy.getDireccion());
+
+			productoServices.cargaProductos(direccionDummy.getDireccion());
+
+			builder = Response.ok();
+
 		} catch (Exception e) {
 			// Handle generic exceptions
 			Map<String, String> responseObj = new HashMap<>();

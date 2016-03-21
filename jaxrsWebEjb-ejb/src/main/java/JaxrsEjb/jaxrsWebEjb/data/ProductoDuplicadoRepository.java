@@ -42,22 +42,6 @@ public class ProductoDuplicadoRepository {
 	}
 
 	public ProductoDuplicado findAllByProducto(Producto producto) {
-
-		/*List<ProductoDuplicado> retorno = null;
-		try {
-
-			Session session = (Session) em.getDelegate();
-			Criteria criteria = session.createCriteria(Producto.class, "producto");
-			criteria.createAlias("producto.proveedor", "proveedor");
-
-			criteria.add(Restrictions.eq("proveedor.id", idProveedor));
-
-			retorno = criteria.list();
-
-		} catch (Exception e) {
-			throw e;
-		}*/
-
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ProductoDuplicado> criteria = cb.createQuery(ProductoDuplicado.class);
 		Root<ProductoDuplicado> productos = criteria.from(ProductoDuplicado.class);

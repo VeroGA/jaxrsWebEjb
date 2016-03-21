@@ -20,6 +20,7 @@ JaxrsEjb\jaxrsWebEjb\model\Compra.class
 JaxrsEjb\jaxrsWebEjb\model\VentaDetalle.class
 JaxrsEjb\jaxrsWebEjb\dummies\ProductoDummy.class
 JaxrsEjb\jaxrsWebEjb\exceptions\InsuficienciaStockVentaDetalleException.class
+JaxrsEjb\jaxrsWebEjb\dummies\DireccionDummy.class
 JaxrsEjb\jaxrsWebEjb\dummies\VentaDetalleDummy.class
 JaxrsEjb\jaxrsWebEjb\model\Pago.class
 JaxrsEjb\jaxrsWebEjb\exceptions\VentaDetalleCantidadException.class

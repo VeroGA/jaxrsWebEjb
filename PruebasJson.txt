@@ -3,7 +3,7 @@ URL
 	http://localhost:8080/jaxrsWebEjb-web/rest/clientes/0/venta/0/pago
 	
 PAYLOAD
-	{"monto":7000, "observacion":"pago por venta de prueba"}
+	{"observacion":"pago por venta de prueba"}
 	
 Prueba para realizar venta
 URL
@@ -21,3 +21,36 @@ PAYLOAD
 				}
 			]
 	}
+	
+Prueba para realizar compra
+URL
+	http://localhost:8080/jaxrsWebEjb-web/rest/productos/compra
+	
+PAYLOAD
+	{
+		"descripcion":"Compra de productos varios",
+		"proveedor_id":0,
+		"compra_detalle":
+			[
+				{
+					"cantidad":2,
+					"producto_id":0
+				}
+			]
+	}
+	
+Prueba para realizar carga masiva de productos
+URL
+	http://localhost:8080/jaxrsWebEjb-web/rest/productos/masivos
+	
+PAYLOAD
+	{"direccion":"C:\Users\jaguilar\workspace\jaxrsWebEjb\prueba_productos_masivas_limpio.txt"}
+	
+Prueba para listar todos los productos
+URL
+	http://localhost:8080/jaxrsWebEjb-web/rest/clientes/0/productos/1
+	
+PAYLOAD
+	{}
+	
+	

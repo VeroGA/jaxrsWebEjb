@@ -18,7 +18,11 @@ package JaxrsEjb.jaxrsWebEjb.data;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.management.Query;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -40,12 +44,13 @@ public class ProductoRepository {
 		return em.find(Producto.class, id);
 	}
 
-	public Producto findByName(String nombre) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Producto> criteria = cb.createQuery(Producto.class);
-		Root<Producto> producto = criteria.from(Producto.class);
-		criteria.select(producto).where(cb.equal(producto.get("nombre"), nombre));
-		return em.createQuery(criteria).getSingleResult();
+	public boolean findByName(String nombre) {
+
+		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Producto p WHERE p.nombre = :nombre", Long.class);
+		long cont = query.setParameter("nombre", nombre.trim()).getSingleResult();
+		
+		if(cont != 0) System.out.println("Existen Productos con este nombre");
+		return cont != 0;
 	}
 
 	public List<Producto> findAllOrderedByName() {

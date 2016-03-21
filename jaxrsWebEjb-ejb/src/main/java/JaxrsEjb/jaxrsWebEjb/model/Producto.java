@@ -3,6 +3,7 @@ package JaxrsEjb.jaxrsWebEjb.model;
 import java.io.Serializable;
 //import java.util.List;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -31,18 +32,14 @@ public class Producto implements Serializable {
 
 	@NotNull
 	@NotEmpty
-	@Size(min = 1, max = 25)
-	@Pattern(regexp = "[^0-9]*", message = "Must not contain numbers")
+	@Column(name="nombre",nullable=false,length=30)
 	private String nombre;
 
-	@NotNull
-	@NotEmpty
-	@Size(min = 4, max = 7)
-	@Digits(fraction = 0, integer = 7)
-	private Integer precio;
+	@Column(name="precio",nullable=false)
+	private int precio;
 
-	@NotNull
-	private Integer stock;
+	@Column(name="stock",nullable=false)
+	private int stock;
 
 	@NotNull
 	@ManyToOne
@@ -54,7 +51,7 @@ public class Producto implements Serializable {
 	// @OneToMany(mappedBy = "producto")
 	// private List<VentaDetalle> venta_detalle;
 
-	@Size(min = 1, max = 100)
+	@Column(name="descripcion",nullable=false,length=100)
 	private String descripcion;
 	
 	public Producto() {

@@ -6,10 +6,14 @@ import JaxrsEjb.jaxrsWebEjb.model.VentaDetalle;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDetalleDummy;
 import JaxrsEjb.jaxrsWebEjb.model.Cliente;
+import JaxrsEjb.jaxrsWebEjb.model.Proveedor;
 import JaxrsEjb.jaxrsWebEjb.data.ProductoRepository;
 import JaxrsEjb.jaxrsWebEjb.data.ClienteRepository;
+import JaxrsEjb.jaxrsWebEjb.data.ProveedorRepository;
 import JaxrsEjb.jaxrsWebEjb.model.Compra;
 import JaxrsEjb.jaxrsWebEjb.model.CompraDetalle;
+import JaxrsEjb.jaxrsWebEjb.dummies.CompraDummy;
+import JaxrsEjb.jaxrsWebEjb.dummies.CompraDetalleDummy;
 import JaxrsEjb.jaxrsWebEjb.model.ProductoDuplicado;
 import JaxrsEjb.jaxrsWebEjb.exceptions.ProductoDuplicadoException;
 import JaxrsEjb.jaxrsWebEjb.exceptions.VentaDetalleCantidadException;
@@ -48,6 +52,9 @@ public class ProductoServices {
 	@Inject
 	private ClienteRepository clienteRepository;
 
+	@Inject
+	private ProveedorRepository proveedorRepository;
+
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void register(Producto producto) throws ProductoDuplicadoException, Exception {
 		log.info("Registering " + producto.getNombre());
@@ -70,41 +77,73 @@ public class ProductoServices {
 		log.info("Transaccion exitosa!!.");
 	}
 
+	/////////////////////
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void realizarCompra(Compra compra) throws Exception {
-		log.info("Se realizo la compra en el ProductoServices de parte del cliente " + compra.getDescripcion());
-		compraMasiva(compra);
-		log.info("Transaccion exitosa!!.");
-	}
+	public void realizarCompra(CompraDummy comprad) throws Exception {
+		log.info("Se realizo Compra en el ProductoServices de la compra: " + comprad.getDescripcion());
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void compraMasiva(Compra compra) throws Exception {
 		try {
-			log.info("Se realizo compra en el ProductoServices de parte del cliente " + compra.getDescripcion());
-			// List<CompraDetalle> detalles = compra.getCompra_detalle();
-			// for (int i = 0; i < detalles.size(); i++) {
-			// comprarProducto(detalles.get(i).getProducto(),
-			// detalles.get(i).getCantidad());
-			// }
-			em.persist(compra);
+			compraMasiva(comprad);
 		} catch (Exception e) {
-			// posible producto null
+			log.info(e.getMessage());
+			// context.setRollbackOnly();
+		}
+		log.info("Compra realizada exitosamente!!.");
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void compraMasiva(CompraDummy comprad) throws Exception {
+		log.info("Se realizara la compra Masiva en el ProductoServices de la compra: " + comprad.getDescripcion());
+
+		List<CompraDetalleDummy> detalles = comprad.getCompra_detalle();
+
+		Compra compra = guardarCompra(comprad);// le paso el ventadummy para
+												// crear la venta
+		for (int i = 0; i < detalles.size(); i++) {
+
+			// detalles.get(i).setVenta_id(venta.getId());
+			Producto producto = productoRepository.findById(detalles.get(i).getProducto_id());
+			comprarProducto(compra, producto, detalles.get(i).getCantidad());
+
+		}
+
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void comprarProducto(Compra compra, Producto producto, Integer cantidad) throws Exception {
+		System.out.println("Comprando producto: " + producto.getNombre());
+		if (producto != null) {
+			if (cantidad > 0) {
+				producto.setStock(producto.getStock() + cantidad);
+				em.merge(producto);
+				// em.flush();
+				CompraDetalle compraDetalle = new CompraDetalle(cantidad, compra, producto);
+				guardarCompraDetalle(compraDetalle,compra);
+			} else {
+				log.info("Cantidad menor a cero!.");
+			}
 		}
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void comprarProducto(Producto producto, Integer cantidad) {
-		if (producto != null) {
-			if (productoRepository.isExist(producto.getId())) {
-				producto.setStock(producto.getStock() + cantidad);
-				em.persist(producto);
-			} else {
-				producto.setStock(cantidad);
-				em.persist(producto);
-			}
-		} else {
-			// exception de null
-		}
+	public Compra guardarCompra(CompraDummy comprad) throws Exception {
+		log.info("Guardando la compra " + comprad.getDescripcion() + "...");
+
+		Proveedor proveedor = proveedorRepository.findById(comprad.getProveedor_id());
+		Compra compra = new Compra(proveedor, comprad.getDescripcion(), 0);
+		compra = em.merge(compra);
+		// em.flush();
+		log.info("Transaccion exitosa!!.");
+		return compra;
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void guardarCompraDetalle(CompraDetalle compradetalle, Compra compra) throws Exception {
+		log.info("Guardando la compra detalle del producto: " + compradetalle.getProducto().getNombre()
+				+ "... con cantidad: " + compradetalle.getCantidad() + "...");
+		compra.setTotal(compra.getTotal() + compradetalle.getCantidad() * compradetalle.getProducto().getPrecio());
+		em.persist(compradetalle);
+		log.info("Transaccion exitosa!!.");
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -115,14 +154,15 @@ public class ProductoServices {
 			ventaMasiva(ventad);
 		} catch (Exception e) {
 			log.info(e.getMessage());
-			//context.setRollbackOnly();
+			// context.setRollbackOnly();
 		}
 
 		log.info("Venta realizada exitosamente!!.");
 	}
 
-	//@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void ventaMasiva(VentaDummy ventad) throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void ventaMasiva(VentaDummy ventad)
+			throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
 		log.info("Se realizara la venta Masiva en el ProductoServices de la venta: " + ventad.getDescripcion());
 
 		List<VentaDetalleDummy> detalles = ventad.getVenta_detalle();
@@ -130,8 +170,8 @@ public class ProductoServices {
 		Venta venta = guardarVenta(ventad);// le paso el ventadummy para
 											// crear la venta
 		for (int i = 0; i < detalles.size(); i++) {
-			
-			detalles.get(i).setVenta_id(venta.getId());
+
+			// detalles.get(i).setVenta_id(venta.getId());
 			Producto producto = productoRepository.findById(detalles.get(i).getProducto_id());
 			venderProducto(venta, producto, detalles.get(i).getCantidad());
 
@@ -139,18 +179,18 @@ public class ProductoServices {
 
 	}
 
-	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void venderProducto(Venta venta, Producto producto, Integer cantidad)
 			throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
 		System.out.println("Vendiendo producto: " + producto.getNombre());
 		if (producto != null) {
 			if (cantidad > 0) {
 				if (producto.getStock() >= cantidad) {
-					
+
 					producto.setStock(producto.getStock() - cantidad);
 					em.merge(producto);
-					//em.flush();
-					
+					// em.flush();
+
 					VentaDetalle ventaDetalle = new VentaDetalle(cantidad, venta, producto);
 					guardarVentaDetalle(ventaDetalle);
 				} else {
@@ -168,30 +208,30 @@ public class ProductoServices {
 		}
 	}
 
-	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Venta guardarVenta(VentaDummy ventad) throws Exception {
 		log.info("Guardando la venta " + ventad.getDescripcion() + "...");
 
 		Cliente cliente = clienteRepository.findById(ventad.getCliente_id());
 		Venta venta = new Venta(ventad.getDescripcion(), cliente, 0);
 		venta = em.merge(venta);
-		//em.flush();
+		// em.flush();
 		log.info("Transaccion exitosa!!.");
 		return venta;
 	}
 
-	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void guardarVentaDetalle(VentaDetalle ventadetalle) throws Exception {
 		log.info("Guardando la venta detalle del producto: " + ventadetalle.getProducto().getNombre()
 				+ "... con cantidad: " + ventadetalle.getCantidad() + "...");
 
 		em.persist(ventadetalle);
-		em.flush();
-		
+		// em.flush();
+
 		log.info("Transaccion exitosa!!.");
 	}
 
-	//@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void guardarProductoDuplicado(Producto producto) throws Exception {
 		// log.info("Guardando producto duplicado: " + producto.getNombre() +
 		// "... con cantidad: " + cantidad + "...");

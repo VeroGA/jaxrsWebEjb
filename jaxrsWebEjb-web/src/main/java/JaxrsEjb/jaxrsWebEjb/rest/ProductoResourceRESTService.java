@@ -48,6 +48,8 @@ import JaxrsEjb.jaxrsWebEjb.service.ProductoServices;
 import JaxrsEjb.jaxrsWebEjb.model.Venta;
 import JaxrsEjb.jaxrsWebEjb.data.VentaRepository;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDummy;
+import JaxrsEjb.jaxrsWebEjb.model.Compra;
+import JaxrsEjb.jaxrsWebEjb.dummies.CompraDummy;
 import JaxrsEjb.jaxrsWebEjb.model.Pago;
 
 @Path("/productos")
@@ -181,6 +183,32 @@ public class ProductoResourceRESTService {
 
 			productoServices.realizarVenta(ventadummy);
 
+			// Create an "ok" response
+			builder = Response.ok();
+		} catch (Exception e) {
+			// Handle generic exceptions
+			Map<String, String> responseObj = new HashMap<>();
+			responseObj.put("error", e.getMessage());
+			builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+		}
+
+		return builder.build();
+	}
+	
+	@POST
+	@Path("/compra")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response realizarCompra(CompraDummy compradummy) {
+
+		Response.ResponseBuilder builder = null;
+
+		try {
+
+			log.info("Se realiza la compra: " + compradummy.getDescripcion() );
+
+			productoServices.realizarCompra(compradummy);
+			
 			// Create an "ok" response
 			builder = Response.ok();
 		} catch (Exception e) {

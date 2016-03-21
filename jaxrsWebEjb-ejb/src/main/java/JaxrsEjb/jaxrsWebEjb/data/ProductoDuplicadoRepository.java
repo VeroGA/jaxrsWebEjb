@@ -25,6 +25,7 @@ import javax.persistence.criteria.Root;
 import java.util.List;
 
 import JaxrsEjb.jaxrsWebEjb.model.ProductoDuplicado;
+import JaxrsEjb.jaxrsWebEjb.model.Producto;
 
 @ApplicationScoped
 public class ProductoDuplicadoRepository {
@@ -40,19 +41,27 @@ public class ProductoDuplicadoRepository {
 		return em.find(ProductoDuplicado.class, id);
 	}
 
-	public ProductoDuplicado findByName(String nombre) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ProductoDuplicado> criteria = cb.createQuery(ProductoDuplicado.class);
-		Root<ProductoDuplicado> producto = criteria.from(ProductoDuplicado.class);
-		criteria.select(producto).where(cb.equal(producto.get("nombre"), nombre));
-		return em.createQuery(criteria).getSingleResult();
-	}
+	public ProductoDuplicado findAllByProducto(Producto producto) {
 
-	public List<ProductoDuplicado> findAllOrderedByName() {
+		/*List<ProductoDuplicado> retorno = null;
+		try {
+
+			Session session = (Session) em.getDelegate();
+			Criteria criteria = session.createCriteria(Producto.class, "producto");
+			criteria.createAlias("producto.proveedor", "proveedor");
+
+			criteria.add(Restrictions.eq("proveedor.id", idProveedor));
+
+			retorno = criteria.list();
+
+		} catch (Exception e) {
+			throw e;
+		}*/
+
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<ProductoDuplicado> criteria = cb.createQuery(ProductoDuplicado.class);
-		Root<ProductoDuplicado> producto = criteria.from(ProductoDuplicado.class);
-		criteria.select(producto).orderBy(cb.asc(producto.get("nombre")));
-		return em.createQuery(criteria).getResultList();
+		Root<ProductoDuplicado> productos = criteria.from(ProductoDuplicado.class);
+		criteria.select(productos).where(cb.equal(productos.get("producto"), producto));
+		return em.createQuery(criteria).getSingleResult();
 	}
 }

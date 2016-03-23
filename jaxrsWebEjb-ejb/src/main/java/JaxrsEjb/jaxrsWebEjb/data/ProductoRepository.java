@@ -46,11 +46,16 @@ public class ProductoRepository {
 
 	public boolean findByName(String nombre) {
 
-		TypedQuery<Long> query = em.createQuery("SELECT COUNT(p) FROM Producto p WHERE p.nombre = :nombre", Long.class);
-		long cont = query.setParameter("nombre", nombre.trim()).getSingleResult();
+		TypedQuery<Producto> query = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = :nombre", Producto.class);
+		List<Producto> p = query.setParameter("nombre", nombre.trim()).getResultList();
 		
-		if(cont != 0) System.out.println("Existen Productos con este nombre");
-		return cont != 0;
+		if(p.size()>0){
+			return true;
+		}else{
+			System.out.println("No existen Productos con este nombre");
+			return false;
+		}
+		
 	}
 
 	public List<Producto> findAllOrderedByName() {

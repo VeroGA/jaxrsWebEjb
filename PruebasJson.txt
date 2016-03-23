@@ -44,7 +44,7 @@ URL
 	http://localhost:8080/jaxrsWebEjb-web/rest/productos/masivos
 	
 PAYLOAD
-	{"direccion":"C:\Users\jaguilar\workspace\jaxrsWebEjb\prueba_productos_masivas_limpio.txt"}
+	{"direccion":"C:\\Users\\jaguilar\\workspace\\jaxrsWebEjb\\prueba_productos_masivas_limpio.txt"}
 	
 Prueba para listar todos los productos
 URL

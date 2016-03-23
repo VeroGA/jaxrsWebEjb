@@ -19,6 +19,7 @@ package JaxrsEjb.jaxrsWebEjb.data;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -41,11 +42,29 @@ public class ProductoDuplicadoRepository {
 		return em.find(ProductoDuplicado.class, id);
 	}
 
-	public ProductoDuplicado findAllByProducto(Producto producto) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ProductoDuplicado> criteria = cb.createQuery(ProductoDuplicado.class);
-		Root<ProductoDuplicado> productos = criteria.from(ProductoDuplicado.class);
-		criteria.select(productos).where(cb.equal(productos.get("producto"), producto));
-		return em.createQuery(criteria).getSingleResult();
+	public ProductoDuplicado findByProducto(Producto producto) {
+		TypedQuery<ProductoDuplicado> query = em.createQuery("SELECT p FROM ProductoDuplicado p WHERE p.producto.nombre = :nombre", ProductoDuplicado.class);
+		List<ProductoDuplicado> p = query.setParameter("nombre", producto.getNombre().trim()).getResultList();
+		
+		if(p.size()>0){
+			return p.get(0);
+		}else{
+			System.out.println("No existen Productos con este nombre");
+			return null;
+		}
+	}
+	
+	public Producto findProductoByName(String nombre) {
+
+		TypedQuery<Producto> query = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = :nombre", Producto.class);
+		List<Producto> p = query.setParameter("nombre", nombre.trim()).getResultList();
+		
+		if(p.size()>0){
+			return p.get(0);
+		}else{
+			System.out.println("No existen Productos con este nombre");
+			return null;
+		}
+		
 	}
 }

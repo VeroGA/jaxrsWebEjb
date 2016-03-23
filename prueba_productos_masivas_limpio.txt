@@ -1,6 +1,6 @@
 {"nombre": "producto1", "precio": 2500, "stock": 2, "proveedor_id": 0, "descripcion": "descripcion1"}
 {"nombre": "producto2", "precio": 2500, "stock": 2, "proveedor_id":	0, "descripcion": "descripcion2"}
-{"nombre": "producto3", "precio": 2500, "stock": 2, "proveedor_id": 0, "descripcion": "descripcion3"}
+{"nombre": "Ayudin", "precio": 2500, "stock": 2, "proveedor_id": 0, "descripcion": "descripcion3"}
 {"nombre": "	producto4	", "precio":	2500	, "stock":	2	, "proveedor_id":	0	, "descripcion": "	descripcion4	"}
 {"nombre": "	producto5	", "precio":	2500	, "stock":	2	, "proveedor_id":	0	, "descripcion": "	descripcion5	"}
 {"nombre": "	producto6	", "precio":	2500	, "stock":	2	, "proveedor_id":	0	, "descripcion": "	descripcion6	"}

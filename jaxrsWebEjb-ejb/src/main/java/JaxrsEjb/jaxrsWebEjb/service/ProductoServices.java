@@ -75,12 +75,25 @@ public class ProductoServices {
 	@Inject
 	private ProveedorRepository proveedorRepository;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void register(Producto producto) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void register(Producto producto) throws ProductoDuplicadoException, Exception {
 		log.info("Registering " + producto.getNombre());
+		
+		try {
 
-		em.persist(producto);
+			if(!productoRepository.findByName(producto.getNombre())){
+				em.persist(producto);
+			}else{
+				log.info("Lanzando la excepcion!.");
+				throw new ProductoDuplicadoException("Ocurrio una violacion de constraint unique!.");
+			}
 
+		} catch (ProductoDuplicadoException e) {
+			
+			guardarProductoDuplicado(producto);
+
+		}
+		
 		log.info("Transaccion exitosa!!.");
 	}
 
@@ -253,9 +266,10 @@ public class ProductoServices {
 	public void guardarProductoDuplicado(Producto producto) throws Exception {
 		log.info("Guardando producto duplicado para producto: " + producto.getNombre());
 
-		ProductoDuplicado productoDuplicado = productoDuplicadoRepository.findAllByProducto(producto);
+		ProductoDuplicado productoDuplicado = productoDuplicadoRepository.findByProducto(producto);
+		Producto productoOriginal = productoDuplicadoRepository.findProductoByName(producto.getNombre());
 		if (productoDuplicado == null) {
-			productoDuplicado = new ProductoDuplicado(producto, 1);
+			productoDuplicado = new ProductoDuplicado(productoOriginal, 1);
 			em.persist(productoDuplicado);
 		} else {
 			productoDuplicado.setCantidad(productoDuplicado.getCantidad() + 1);
@@ -298,13 +312,15 @@ public class ProductoServices {
 
 					register(producto);
 
-				} catch (Exception e) {
+				} catch (ProductoDuplicadoException e) {
 					errores = errores + "Error producto duplicado: " + cantidadTotal
 							+ " agregado a tabla de productos duplicados \n";
 
-					guardarProductoDuplicado(producto);
+					//guardarProductoDuplicado(producto);
 
 					cantErrores++;
+				}catch(Exception e){
+					log.info("Error: " + e.getLocalizedMessage());
 				}
 
 			} catch (JsonSyntaxException e) {

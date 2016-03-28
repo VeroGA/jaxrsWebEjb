@@ -75,26 +75,32 @@ public class ProductoServices {
 	@Inject
 	private ProveedorRepository proveedorRepository;
 
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void register(Producto producto) throws ProductoDuplicadoException, Exception {
 		log.info("Registering " + producto.getNombre());
-		
+
 		try {
 
-			if(!productoRepository.findByName(producto.getNombre())){
-				em.persist(producto);
-			}else{
+			if (!productoRepository.findByName(producto.getNombre())) {
+				persistir(producto);
+			} else {
 				log.info("Lanzando la excepcion!.");
 				throw new ProductoDuplicadoException("Ocurrio una violacion de constraint unique!.");
 			}
 
-		} catch (ProductoDuplicadoException e) {
-			
+		} catch(ProductoDuplicadoException e) {
+			log.info("Lanzando la excepcion!.");
 			guardarProductoDuplicado(producto);
-
 		}
-		
+
 		log.info("Transaccion exitosa!!.");
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public void persistir(Producto producto) throws Exception {
+		log.info("Guardando... " + producto.getNombre());
+
+		em.persist(producto);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -205,7 +211,6 @@ public class ProductoServices {
 
 		for (int i = 0; i < detalles.size(); i++) {
 
-			// detalles.get(i).setVenta_id(venta.getId());
 			Producto producto = productoRepository.findById(detalles.get(i).getProducto_id());
 			venderProducto(venta, producto, detalles.get(i).getCantidad());
 
@@ -276,7 +281,7 @@ public class ProductoServices {
 			em.merge(productoDuplicado);
 		}
 
-		log.info("Guardado!! producto duplicado por id: " + producto.getId());
+		log.info("Guardado!! producto duplicado por id: " + productoDuplicado.getProducto().getId());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
@@ -316,10 +321,12 @@ public class ProductoServices {
 					errores = errores + "Error producto duplicado: " + cantidadTotal
 							+ " agregado a tabla de productos duplicados \n";
 
-					//guardarProductoDuplicado(producto);
+					// guardarProductoDuplicado(producto);
 
 					cantErrores++;
-				}catch(Exception e){
+				} catch (Exception e) {
+					log.info("Lanzando la excepcion!.");
+					guardarProductoDuplicado(producto);
 					log.info("Error: " + e.getLocalizedMessage());
 				}
 
@@ -344,24 +351,5 @@ public class ProductoServices {
 			log.info(errores);
 		}
 		log.info("Carga Exitosa," + cantidadTotal + " productos cargados");
-	}
-
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public List<Producto> getListaProductos(Cliente cliente, int pagina, int pageSize) {
-		List<Producto> retorno = null;
-
-		try {
-			//Session session = (Session) em.getDelegate();
-			//Criteria criteria = session.createCriteria(Producto.class, "producto");
-
-			//criteria.setMaxResults(pageSize);
-			//criteria.setFirstResult(pagina * pageSize);
-
-			//retorno = criteria.list();
-
-		} catch (Exception e) {
-			throw e;
-		}
-		return retorno;
 	}
 }

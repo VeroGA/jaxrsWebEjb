@@ -211,17 +211,4 @@ public class ClienteResourceRESTService {
 
 		return builder.build();
 	}
-
-	@POST
-	@Path("/{idcliente:[0-9][0-9]*}/productos/{pagina:[0-9][0-9]*}")
-	@Produces(MediaType.APPLICATION_JSON)
-	public List<Producto> listarProductos(@PathParam("idcliente") long idcliente, @PathParam("pagina") int pagina) {
-		try{
-			Cliente cliente = repository.findById(idcliente);
-			return productoServices.getListaProductos(cliente, pagina, 100);
-		}catch(Exception e){
-			log.info("Ocurrio un error durante la lectura de los productos: " + e.getMessage());
-		}
-		return null;
-	}
 }

@@ -15,6 +15,7 @@ import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -127,5 +128,17 @@ public class ProveedorResourceRESTService {
             // ignore
         }
         return proveedor != null;
+    }
+    
+    @DELETE
+    @Path("/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void deleteProveedorById(@PathParam("id") long id) {
+    	Proveedor proveedor = repository.findById(id);
+        if (proveedor == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        
+        registration.deleteProveedor(proveedor);
     }
 }

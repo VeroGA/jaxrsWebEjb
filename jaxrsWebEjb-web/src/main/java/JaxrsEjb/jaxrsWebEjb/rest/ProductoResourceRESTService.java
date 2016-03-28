@@ -16,6 +16,7 @@
  */
 package JaxrsEjb.jaxrsWebEjb.rest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -25,6 +26,8 @@ import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.persistence.NoResultException;
 import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
@@ -45,12 +48,12 @@ import javax.ws.rs.core.Response;
 import JaxrsEjb.jaxrsWebEjb.data.ProductoRepository;
 import JaxrsEjb.jaxrsWebEjb.model.Producto;
 import JaxrsEjb.jaxrsWebEjb.service.ProductoServices;
-import JaxrsEjb.jaxrsWebEjb.model.Venta;
-import JaxrsEjb.jaxrsWebEjb.data.VentaRepository;
+import JaxrsEjb.jaxrsWebEjb.service.ProductoSingleton;
+import JaxrsEjb.jaxrsWebEjb.service.ProductoStateful;
 import JaxrsEjb.jaxrsWebEjb.dummies.CompraDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.DireccionDummy;
+import JaxrsEjb.jaxrsWebEjb.dummies.ProductoDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDummy;
-import JaxrsEjb.jaxrsWebEjb.model.Pago;
 
 @Path("/productos")
 @RequestScoped
@@ -64,17 +67,63 @@ public class ProductoResourceRESTService {
 	@Inject
 	private ProductoRepository productoRepository;
 
-	@Inject
-	private VentaRepository ventaRepository;
-
 	@EJB
 	private ProductoServices productoServices;
+	
+	@EJB
+	private ProductoSingleton productoSingleton;
+
+	// @EJB
+	//private ProductoStateful productoStateful = null;
+	
+	@POST
+	@Path("/session")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Long crearSessionStateful(){
+		return productoSingleton.crear();
+	}
+	
+	@DELETE
+	@Path("/session/{id:[0-9][0-9]*}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response eliminarSessionStateful(@PathParam("id") long id){
+		Response.ResponseBuilder builder = null;
+		
+		productoSingleton.remover(id);
+		
+		builder = Response.ok();
+		return builder.build();
+	}
 
 	@GET
+	@Path("/session/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<Producto> listAllClientes() {
-		return productoRepository.findAllOrderedByName();
+	public List<ProductoDummy> buscarTodos(@PathParam("id") long id){
+		
+		ProductoStateful productoStateful = productoSingleton.obtener(id);
+		List<ProductoDummy> list = new ArrayList<ProductoDummy>();
+		int cantidad = 1;
+		
+		productoStateful.iniciar();
+
+		while (productoStateful.hasNext() && cantidad <= 100) {
+			Producto p = productoStateful.nextProducto();
+
+			if (p != null)
+				list.add(new ProductoDummy(p));
+
+			cantidad++;
+		}
+
+		return list;
 	}
+
+	/*
+	 * @GET
+	 * 
+	 * @Produces(MediaType.APPLICATION_JSON) public List<Producto>
+	 * listAllClientes() { return productoRepository.findAllOrderedByName(); }
+	 */
 
 	@GET
 	@Path("/{id:[0-9][0-9]*}")

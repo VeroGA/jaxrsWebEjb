@@ -1,5 +1,7 @@
 package JaxrsEjb.jaxrsWebEjb.dummies;
 
+import JaxrsEjb.jaxrsWebEjb.model.Producto;
+
 public class ProductoDummy {
 	
 	private String nombre;
@@ -14,6 +16,14 @@ public class ProductoDummy {
 	private Long proveedor_id;
 	
 	private String descripcion;
+
+	public ProductoDummy(Producto p) {
+		this.nombre = p.getNombre();
+		this.precio = p.getPrecio();
+		this.stock = p.getStock();
+		this.proveedor_id = p.getProveedor().getId();
+		this.descripcion = p.getDescripcion();
+	}
 
 	public String getNombre() {
 		return nombre;

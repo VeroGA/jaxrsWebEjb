@@ -108,7 +108,6 @@
 			</dependency>
 
 			<!-- Dependencia para postgresql -->
-
 			<dependency>
 				<groupId>org.postgresql</groupId>
 				<artifactId>postgresql</artifactId>

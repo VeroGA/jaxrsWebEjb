@@ -19,12 +19,14 @@ package JaxrsEjb.jaxrsWebEjb.data;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 import java.util.List;
 
 import JaxrsEjb.jaxrsWebEjb.model.ProductoDuplicado;
+import JaxrsEjb.jaxrsWebEjb.model.Producto;
 
 @ApplicationScoped
 public class ProductoDuplicadoRepository {
@@ -40,19 +42,29 @@ public class ProductoDuplicadoRepository {
 		return em.find(ProductoDuplicado.class, id);
 	}
 
-	public ProductoDuplicado findByName(String nombre) {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ProductoDuplicado> criteria = cb.createQuery(ProductoDuplicado.class);
-		Root<ProductoDuplicado> producto = criteria.from(ProductoDuplicado.class);
-		criteria.select(producto).where(cb.equal(producto.get("nombre"), nombre));
-		return em.createQuery(criteria).getSingleResult();
+	public ProductoDuplicado findByProducto(Producto producto) {
+		TypedQuery<ProductoDuplicado> query = em.createQuery("SELECT p FROM ProductoDuplicado p WHERE p.producto.nombre = :nombre", ProductoDuplicado.class);
+		List<ProductoDuplicado> p = query.setParameter("nombre", producto.getNombre().trim()).getResultList();
+		
+		if(p.size()>0){
+			return p.get(0);
+		}else{
+			System.out.println("No existen Productos con este nombre");
+			return null;
+		}
 	}
+	
+	public Producto findProductoByName(String nombre) {
 
-	public List<ProductoDuplicado> findAllOrderedByName() {
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<ProductoDuplicado> criteria = cb.createQuery(ProductoDuplicado.class);
-		Root<ProductoDuplicado> producto = criteria.from(ProductoDuplicado.class);
-		criteria.select(producto).orderBy(cb.asc(producto.get("nombre")));
-		return em.createQuery(criteria).getResultList();
+		TypedQuery<Producto> query = em.createQuery("SELECT p FROM Producto p WHERE p.nombre = :nombre", Producto.class);
+		List<Producto> p = query.setParameter("nombre", nombre.trim()).getResultList();
+		
+		if(p.size()>0){
+			return p.get(0);
+		}else{
+			System.out.println("No existen Productos con este nombre");
+			return null;
+		}
+		
 	}
 }

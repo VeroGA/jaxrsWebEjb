@@ -49,6 +49,7 @@ import JaxrsEjb.jaxrsWebEjb.service.ProductoServices;
 import JaxrsEjb.jaxrsWebEjb.model.Venta;
 import JaxrsEjb.jaxrsWebEjb.data.VentaRepository;
 import JaxrsEjb.jaxrsWebEjb.model.Pago;
+import JaxrsEjb.jaxrsWebEjb.model.Producto;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDummy;
 
 @Path("/clientes")
@@ -68,7 +69,7 @@ public class ClienteResourceRESTService {
 
 	@EJB
 	private ClienteServices clienteServices;
-	
+
 	@EJB
 	private ProductoServices productoServices;
 

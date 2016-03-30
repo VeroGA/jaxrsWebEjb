@@ -6,6 +6,7 @@ C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\j
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\util\Resources.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\dummies\ProductoDummy.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\dummies\VentaDetalleDummy.java
+C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\service\ProductoSingleton.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\service\ProveedorServices.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\dummies\CompraDetalleDummy.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\service\ProductoServices.java
@@ -17,7 +18,9 @@ C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\j
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\data\ProductoDuplicadoRepository.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\exceptions\ProductoDuplicadoException.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\model\Cliente.java
+C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\service\ProductoStateful.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\dummies\VentaDummy.java
+C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\dummies\DireccionDummy.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\data\PagoRepository.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\model\Venta.java
 C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-ejb\src\main\java\JaxrsEjb\jaxrsWebEjb\data\ProductoRepository.java

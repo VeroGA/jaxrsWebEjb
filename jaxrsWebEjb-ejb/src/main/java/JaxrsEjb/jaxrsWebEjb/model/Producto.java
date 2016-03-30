@@ -10,6 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
 //import javax.persistence.OneToMany;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 @Entity
 @XmlRootElement
 @Table(name = "producto", uniqueConstraints = @UniqueConstraint(columnNames = "nombre"))
+@NamedQuery(query = "Select p from Producto p where p.nombre = :nombre", name = "find producto by nombre")
 public class Producto implements Serializable {
 	/** Default value included to remove warning. Remove or modify at will. **/
 	private static final long serialVersionUID = 1L;
@@ -30,15 +32,13 @@ public class Producto implements Serializable {
 	@GeneratedValue
 	private Long id;
 
-	@NotNull
-	@NotEmpty
-	@Column(name="nombre",nullable=false,length=30)
+	@Column(name="nombre", length=30)
 	private String nombre;
 
-	@Column(name="precio",nullable=false)
+	@Column(name="precio")
 	private int precio;
 
-	@Column(name="stock",nullable=false)
+	@Column(name="stock")
 	private int stock;
 
 	@NotNull

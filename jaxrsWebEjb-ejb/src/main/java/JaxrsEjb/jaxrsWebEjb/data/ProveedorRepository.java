@@ -44,9 +44,6 @@ public class ProveedorRepository {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Proveedor> criteria = cb.createQuery(Proveedor.class);
         Root<Proveedor> proveedor = criteria.from(Proveedor.class);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-        // criteria.select(proveedor).where(cb.equal(proveedor.get(Proveedor_.name), email));
         criteria.select(proveedor).where(cb.equal(proveedor.get("email"), email));
         return em.createQuery(criteria).getSingleResult();
     }
@@ -58,7 +55,7 @@ public class ProveedorRepository {
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new
         // feature in JPA 2.0
         // criteria.select(proveedor).orderBy(cb.asc(proveedor.get(Proveedor_.name)));
-        criteria.select(proveedor).orderBy(cb.asc(proveedor.get("name")));
+        criteria.select(proveedor).orderBy(cb.asc(proveedor.get("nombre")));
         return em.createQuery(criteria).getResultList();
     }
 }

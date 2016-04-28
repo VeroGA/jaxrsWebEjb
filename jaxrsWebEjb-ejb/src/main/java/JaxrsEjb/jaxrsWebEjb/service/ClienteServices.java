@@ -59,11 +59,13 @@ public class ClienteServices {
 		try {
 			pago.setCliente(cliente);
 			pago.setVenta(venta);
-			pago.setMonto(venta.getTotal());
+			//pago.setMonto(venta.getTotal());
+			
 			log.info("Se realizo el pago en el ClienteServices de parte del cliente " + pago.getCliente().getName());
 			em.persist(pago);
+			log.info("Transaccion Exitosa!");
 		} catch (Exception e) {
-			//throw e;
+			log.info("Ocurrio un error durante el Pago: " + e.getMessage());
 		}
 	}
 

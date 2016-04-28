@@ -17,16 +17,16 @@
 package JaxrsEjb.jaxrsWebEjb.model;
 
 import java.io.Serializable;
-import java.util.List;
+//import java.util.List;
 
-import javax.persistence.CascadeType;
+//import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+//import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.OneToMany;
+//import javax.persistence.OneToMany;
 import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -64,11 +64,27 @@ public class Cliente implements Serializable {
     @Column(name = "phone_number")
     private String phoneNumber;
     
-    @OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="cliente")
-    private List<Pago> pagos;
+    //@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="cliente")
+    //private List<Pago> pagos;
+    
+    //@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL, mappedBy="cliente")
+    //private List<Venta> ventas;
     
     @Column(name = "saldo_pagar")
-    private Long saldoPagar;
+    private Integer saldoPagar;
+    
+    public Cliente() {
+		this.name = "";
+		this.phoneNumber = "";
+		this.saldoPagar = 0;
+	}
+
+    public Cliente(String name, String email, String phoneNumber, Integer saldoPagar) {
+		this.name = name;
+		this.email = email;
+		this.phoneNumber = phoneNumber;
+		this.saldoPagar = saldoPagar;
+	}
 
     public Long getId() {
         return id;
@@ -101,4 +117,12 @@ public class Cliente implements Serializable {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
+
+	public Integer getSaldoPagar() {
+		return saldoPagar;
+	}
+
+	public void setSaldoPagar(Integer saldoPagar) {
+		this.saldoPagar = saldoPagar;
+	}
 }

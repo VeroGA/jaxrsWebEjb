@@ -8,19 +8,12 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
-//import javax.persistence.UniqueConstraint;
-//import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-//import javax.validation.constraints.Pattern;
-//import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-
-//import org.hibernate.validator.constraints.Email;
-//import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @XmlRootElement
-@Table(name = "compra_detalle")//, uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "compra_detalle")
 public class CompraDetalle implements Serializable {
     /** Default value included to remove warning. Remove or modify at will. **/
     private static final long serialVersionUID = 1L;
@@ -30,7 +23,7 @@ public class CompraDetalle implements Serializable {
     private Long id;
     
     @NotNull
-    private Long cantidad;
+    private Integer cantidad;
 
     @NotNull
     @ManyToOne
@@ -40,7 +33,19 @@ public class CompraDetalle implements Serializable {
     @ManyToOne
     private Producto producto;
     
-    public Long getId() {
+    public CompraDetalle() {
+		this.cantidad = 0;
+		this.compra = null;
+		this.producto = null;
+	}
+    
+    public CompraDetalle(Integer cantidad, Compra compra, Producto producto) {
+		this.cantidad = cantidad;
+		this.compra = compra;
+		this.producto = producto;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -48,11 +53,11 @@ public class CompraDetalle implements Serializable {
         this.id = id;    
     }
     
-    public Long getCantidad() {
+    public Integer getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(Long cantidad) {
+    public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
 

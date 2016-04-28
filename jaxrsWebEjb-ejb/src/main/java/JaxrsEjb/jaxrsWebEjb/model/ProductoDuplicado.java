@@ -28,9 +28,17 @@ public class ProductoDuplicado implements Serializable {
 	private Producto producto;
 	
 	@NotNull
-	@Size(min = 4, max = 7)
-	@Digits(fraction = 0, integer = 7)
-	private Long cantidad;
+	private int cantidad;
+	
+	public ProductoDuplicado() {
+		this.producto = null;
+		this.cantidad = 0;
+	}
+
+	public ProductoDuplicado(Producto producto, int cantidad) {
+		this.producto = producto;
+		this.cantidad = cantidad;
+	}
 
 	public Long getId() {
 		return id;
@@ -48,11 +56,11 @@ public class ProductoDuplicado implements Serializable {
 		this.producto = producto;
 	}
 
-	public Long getCantidad() {
+	public int getCantidad() {
 		return cantidad;
 	}
 
-	public void setCantidad(Long cantidad) {
+	public void setCantidad(int cantidad) {
 		this.cantidad = cantidad;
 	}
 

@@ -1,5 +1,6 @@
 JaxrsEjb\jaxrsWebEjb\rest\JaxRsActivator.class
 JaxrsEjb\jaxrsWebEjb\rest\ClienteResourceRESTService.class
+JaxrsEjb\jaxrsWebEjb\rest\ProductoResourceRESTService.class
 JaxrsEjb\jaxrsWebEjb\util\WebResources.class
 JaxrsEjb\jaxrsWebEjb\rest\ProveedorResourceRESTService.class
 JaxrsEjb\jaxrsWebEjb\controller\ClienteController.class

@@ -1,15 +1,16 @@
 package JaxrsEjb.jaxrsWebEjb.model;
 
 import java.io.Serializable;
-import java.util.List;
+//import java.util.List;
 
 //import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+//import javax.persistence.OneToMany;
 //import javax.persistence.UniqueConstraint;
 //import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
@@ -34,18 +35,31 @@ public class Compra implements Serializable {
 
     @NotNull
     @ManyToOne
+    @JoinColumn(name="proveedor_id")
     private Proveedor proveedor;
     
-    @OneToMany(mappedBy="compra")
-    private List<CompraDetalle> compra_detalle;
+    //@OneToMany(mappedBy="compra")
+    //private List<CompraDetalle> compra_detalle;
     
     @Size(min = 1, max = 100)
     private String descripcion;
     
     @NotNull
-    private Long total;
+    private Integer total;
     
-    public Long getId() {
+    public Compra() {
+		this.proveedor = null;
+		this.descripcion = "";
+		this.total = 0;
+	}
+    
+    public Compra(Proveedor proveedor, String descripcion, Integer total) {
+		this.proveedor = proveedor;
+		this.descripcion = descripcion;
+		this.total = total;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -53,11 +67,11 @@ public class Compra implements Serializable {
         this.id = id;
     }
 
-    public Long getTotal() {
+    public Integer getTotal() {
         return total;
     }
 
-    public void setTotal(Long total) {
+    public void setTotal(Integer total) {
         this.total = total;
     }
 
@@ -75,13 +89,5 @@ public class Compra implements Serializable {
 
 	public void setProveedor(Proveedor proveedor) {
 		this.proveedor = proveedor;
-	}
-
-	public List<CompraDetalle> getCompra_detalle() {
-		return compra_detalle;
-	}
-
-	public void setCompra_detalle(List<CompraDetalle> compra_detalle) {
-		this.compra_detalle = compra_detalle;
 	}
 }

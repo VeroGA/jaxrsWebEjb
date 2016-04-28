@@ -8,7 +8,10 @@
         <dependent-module archiveName="jaxrsWebEjb-ejb.jar" deploy-path="/" handle="module:/resource/jaxrsWebEjb-ejb/jaxrsWebEjb-ejb">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="transaction-api.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/javax/transaction/transaction-api/1.1-rev-1/transaction-api-1.1-rev-1.jar">
+        <dependent-module archiveName="jta.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/javax/transaction/jta/1.1/jta-1.1.jar">
+            <dependency-type>uses</dependency-type>
+        </dependent-module>
+        <dependent-module archiveName="gson.jar" deploy-path="/lib" handle="module:/classpath/var/M2_REPO/com/google/code/gson/gson/2.2.4/gson-2.2.4.jar">
             <dependency-type>uses</dependency-type>
         </dependent-module>
     </wb-module>

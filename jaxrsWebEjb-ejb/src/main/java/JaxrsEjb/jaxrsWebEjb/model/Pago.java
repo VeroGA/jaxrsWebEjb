@@ -1,27 +1,15 @@
-/* JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package JaxrsEjb.jaxrsWebEjb.model;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.ManyToOne;
 import javax.persistence.JoinColumn;
 import javax.validation.constraints.NotNull;
@@ -33,7 +21,7 @@ import JaxrsEjb.jaxrsWebEjb.model.Cliente;
 
 @Entity
 @XmlRootElement
-@Table(name = "pago")//, uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "pago")
 public class Pago implements Serializable {
     /** Default value included to remove warning. Remove or modify at will. **/
     private static final long serialVersionUID = 1L;
@@ -58,7 +46,28 @@ public class Pago implements Serializable {
     private Venta venta;
     
     @Column(name="monto")
-    private Long monto;
+    private Integer monto;
+    
+    @NotNull
+    @Column(name="fecha")
+    @Temporal(TemporalType.DATE)
+    private Date fecha;
+    
+    public Pago() {
+		this.observacion = "";
+		this.cliente = null;
+		this.venta = null;
+		this.monto = 0;
+		this.fecha = new Date();
+	}
+
+	public Pago(String observacion, Cliente cliente, Venta venta, Integer monto, Date fecha) {
+		this.observacion = observacion;
+		this.cliente = cliente;
+		this.venta = venta;
+		this.monto = monto;
+		this.fecha = fecha;
+	}
 
 	public Long getId() {
         return id;
@@ -92,11 +101,20 @@ public class Pago implements Serializable {
 		this.venta = venta;
 	}
 
-	public Long getMonto() {
+	public Integer getMonto() {
 		return monto;
 	}
 
-	public void setMonto(Long monto) {
+	public void setMonto(Integer monto) {
 		this.monto = monto;
 	}
+
+	public Date getFecha() {
+		return fecha;
+	}
+
+	public void setFecha(Date fecha) {
+		this.fecha = fecha;
+	}
+	
 }

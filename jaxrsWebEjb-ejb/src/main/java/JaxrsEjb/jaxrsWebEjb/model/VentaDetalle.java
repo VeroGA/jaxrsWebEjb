@@ -2,25 +2,17 @@ package JaxrsEjb.jaxrsWebEjb.model;
 
 import java.io.Serializable;
 
-//import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
-//import javax.persistence.UniqueConstraint;
-//import javax.validation.constraints.Digits;
 import javax.validation.constraints.NotNull;
-//import javax.validation.constraints.Pattern;
-//import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-
-//import org.hibernate.validator.constraints.Email;
-//import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @XmlRootElement
-@Table(name = "venta_detalle")//, uniqueConstraints = @UniqueConstraint(columnNames = "email"))
+@Table(name = "venta_detalle")
 public class VentaDetalle implements Serializable {
     /** Default value included to remove warning. Remove or modify at will. **/
     private static final long serialVersionUID = 1L;
@@ -30,7 +22,7 @@ public class VentaDetalle implements Serializable {
     private Long id;
     
     @NotNull
-    private Long cantidad;
+    private Integer cantidad;
 
     @NotNull
     @ManyToOne
@@ -40,7 +32,17 @@ public class VentaDetalle implements Serializable {
     @ManyToOne
     private Producto producto;
     
-    public Long getId() {
+    public VentaDetalle() {
+		this.cantidad = 0;
+	}
+    
+    public VentaDetalle(Integer cantidad, Venta venta, Producto producto) {
+		this.cantidad = cantidad;
+		this.venta = venta;
+		this.producto = producto;
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -48,11 +50,11 @@ public class VentaDetalle implements Serializable {
         this.id = id;    
     }
     
-    public Long getCantidad() {
+    public Integer getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(Long cantidad) {
+    public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }
 

@@ -1,35 +1,13 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package JaxrsEjb.jaxrsWebEjb.rest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-import javax.persistence.NoResultException;
-import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
 import javax.validation.Validator;
@@ -44,6 +22,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
 import JaxrsEjb.jaxrsWebEjb.data.ProductoRepository;
 import JaxrsEjb.jaxrsWebEjb.model.Producto;
@@ -69,28 +49,32 @@ public class ProductoResourceRESTService {
 
 	@EJB
 	private ProductoServices productoServices;
-	
+
+	@EJB
+	private ProductoStateful productoStateful;
+
 	@EJB
 	private ProductoSingleton productoSingleton;
 
-	// @EJB
-	//private ProductoStateful productoStateful = null;
-	
 	@POST
+
 	@Path("/session")
+
 	@Produces(MediaType.APPLICATION_JSON)
-	public Long crearSessionStateful(){
+	public Long crearSessionStateful() {
 		return productoSingleton.crear();
 	}
-	
+
 	@DELETE
+
 	@Path("/session/{id:[0-9][0-9]*}")
+
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response eliminarSessionStateful(@PathParam("id") long id){
+	public Response eliminarSessionStateful(@PathParam("id") long id) {
 		Response.ResponseBuilder builder = null;
-		
+
 		productoSingleton.remover(id);
-		
+
 		builder = Response.ok();
 		return builder.build();
 	}
@@ -98,12 +82,12 @@ public class ProductoResourceRESTService {
 	@GET
 	@Path("/session/{id:[0-9][0-9]*}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<ProductoDummy> buscarTodos(@PathParam("id") long id){
-		
+	public List<ProductoDummy> buscarTodos(@PathParam("id") long id) {
+
 		ProductoStateful productoStateful = productoSingleton.obtener(id);
 		List<ProductoDummy> list = new ArrayList<ProductoDummy>();
 		int cantidad = 1;
-		
+
 		productoStateful.iniciar();
 
 		while (productoStateful.hasNext() && cantidad <= 100) {
@@ -121,8 +105,29 @@ public class ProductoResourceRESTService {
 	/*
 	 * @GET
 	 * 
-	 * @Produces(MediaType.APPLICATION_JSON) public List<Producto>
-	 * listAllClientes() { return productoRepository.findAllOrderedByName(); }
+	 * @Produces("multipart/mixed")
+	 * 
+	 * @PartType("application/xml") public List<ProductoDummy>
+	 * listAllProductos() throws NamingException{ List<ProductoDummy> list = new
+	 * ArrayList<ProductoDummy>();
+	 * 
+	 * try {
+	 * 
+	 * int cantidad = 1;
+	 * 
+	 * productoStateful.iniciar();
+	 * 
+	 * while (productoStateful.hasNext() && cantidad <= 100) { Producto p =
+	 * productoStateful.nextProducto();
+	 * 
+	 * if (p != null) list.add(new ProductoDummy(p));
+	 * 
+	 * cantidad++; }
+	 * 
+	 * } catch (Exception e) { log.info(
+	 * "Ocurrio un error al intentar leer los prodcutos: " + e.getMessage()); }
+	 * 
+	 * return list; }
 	 */
 
 	@GET
@@ -144,21 +149,15 @@ public class ProductoResourceRESTService {
 		Response.ResponseBuilder builder = null;
 
 		try {
-			// Validates member using bean validation
-			validateProducto(producto);
 
-			productoServices.register(producto);
+			productoServices.register(new JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto(producto));
 
 			// Create an "ok" response
 			builder = Response.ok();
 		} catch (ConstraintViolationException ce) {
 			// Handle bean validation issues
-			builder = createViolationResponse(ce.getConstraintViolations());
 		} catch (ValidationException e) {
 			// Handle the unique constrain violation
-			Map<String, String> responseObj = new HashMap<>();
-			responseObj.put("email", "Email taken");
-			builder = Response.status(Response.Status.CONFLICT).entity(responseObj);
 		} catch (Exception e) {
 			// Handle generic exceptions
 			Map<String, String> responseObj = new HashMap<>();
@@ -172,50 +171,12 @@ public class ProductoResourceRESTService {
 	@DELETE
 	@Path("/{id:[0-9][0-9]*}")
 	public void deleteProductoById(@PathParam("id") long id) throws Exception {
-		// Response.ResponseBuilder builder = null;
 		Producto producto = productoRepository.findById(id);
 		if (producto == null) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
-		productoServices.deleteProducto(producto);
+		productoServices.deleteProducto(new JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto(producto));
 		Response.accepted();
-	}
-
-	private void validateProducto(Producto producto) throws ConstraintViolationException, ValidationException {
-		// Create a bean validator and check for issues.
-		Set<ConstraintViolation<Producto>> violations = validator.validate(producto);
-
-		if (!violations.isEmpty()) {
-			throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
-		}
-
-		// Check the uniqueness of the email address
-		/*
-		 * if (nombreAlreadyExists(producto.getNombre())) { throw new
-		 * ValidationException("Violacion de unique nombre"); }
-		 */
-	}
-
-	private Response.ResponseBuilder createViolationResponse(Set<ConstraintViolation<?>> violations) {
-		log.fine("Validation completed. violations found: " + violations.size());
-
-		Map<String, String> responseObj = new HashMap<>();
-
-		for (ConstraintViolation<?> violation : violations) {
-			responseObj.put(violation.getPropertyPath().toString(), violation.getMessage());
-		}
-
-		return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
-	}
-
-	public boolean nombreAlreadyExists(String nombre) {
-		Producto producto = null;
-		try {
-			// producto = productoRepository.findByName(nombre);
-		} catch (NoResultException e) {
-			// ignore
-		}
-		return producto != null;
 	}
 
 	@POST

@@ -1,21 +1,6 @@
-/*
- * JBoss, Home of Professional Open Source
- * Copyright 2013, Red Hat, Inc. and/or its affiliates, and individual
- * contributors by the @authors tag. See the copyright.txt in the
- * distribution for a full listing of individual contributors.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * http://www.apache.org/licenses/LICENSE-2.0
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package JaxrsEjb.jaxrsWebEjb.service;
 
+import javax.ejb.EJB;
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -24,10 +9,14 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
-import JaxrsEjb.jaxrsWebEjb.model.Cliente;
-import JaxrsEjb.jaxrsWebEjb.model.Pago;
 import JaxrsEjb.jaxrsWebEjb.model.Venta;
+import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Cliente;
+import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Pago;
+import JaxrsEjb.jaxrsWebEjb.mybatis.manager.ClienteManager;
+import JaxrsEjb.jaxrsWebEjb.mybatis.manager.PagoManager;
 
+import java.util.Date;
+import java.util.List;
 import java.util.logging.Logger;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
@@ -40,33 +29,81 @@ public class ClienteServices {
 
 	@Inject
 	private Logger log;
+	
+	@EJB
+	private ClienteManager clienteManager;
+	
+	@EJB
+	private PagoManager pagoManager;
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void register(Cliente cliente) throws Exception {
 		log.info("Registering " + cliente.getName());
-		em.persist(cliente);
+		// em.persist(cliente);
+		//clienteManager = new ClienteManager();
+		clienteManager.newCliente(cliente);
+		log.info("Se registro al cliente: " + cliente.getName() + " con id: " + cliente.getId().toString());
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public Integer update(Cliente cliente) throws Exception {
+		log.info("Modificando " + cliente.getName());
+		// em.persist(cliente);
+		//clienteManager = new ClienteManager();
+		return clienteManager.updateCliente(cliente);
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public Cliente buscarCliente(Integer id) {
+		//clienteManager = new ClienteManager();
+		return clienteManager.getClienteById(id);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteCliente(Cliente cliente) throws Exception {
 		log.info("Sera eliminado el cliente con nombre: " + cliente.getName());
-		em.remove(cliente);
+		// em.remove(cliente);
+		//clienteManager = new ClienteManager();
+		clienteManager.deleteCliente(cliente.getId());
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void realizarPago(Pago pago, Venta venta, Cliente cliente) throws Exception {
-		System.out.println("Llego a entrar en la transaccion?..");
+	public void realizarPago(Pago pago_in, Venta venta, Cliente cliente) throws Exception {
 		try {
-			pago.setCliente(cliente);
-			pago.setVenta(venta);
-			//pago.setMonto(venta.getTotal());
+			Pago pago_out = new Pago(pago_in.getObservacion(), cliente.getId(),
+					Integer.valueOf(venta.getId().toString()), venta.getTotal(), new Date());
 			
-			log.info("Se realizo el pago en el ClienteServices de parte del cliente " + pago.getCliente().getName());
-			em.persist(pago);
+			log.info("Se realizo el pago en el ClienteServices de parte del cliente " + cliente.getName());
+			
+			Integer id_pago_out = pagoManager.newPago(pago_out);
+			
+			log.info("Se registro el pago exitosamente con id: " + id_pago_out.toString());
 			log.info("Transaccion Exitosa!");
+			
 		} catch (Exception e) {
 			log.info("Ocurrio un error durante el Pago: " + e.getMessage());
 		}
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public List<Cliente> getAll() throws Exception {
+		log.info("Seran consultados todos los clientes..");
+		//clienteManager = new ClienteManager();
+		return clienteManager.getAll();
+	}
+
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public Boolean isExist(Integer id) throws Exception {
+		log.info("Sera consultado el cliente con id=" + id.toString());
+		//clienteManager = new ClienteManager();
+		return clienteManager.isExist(id);
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public Cliente findByEmail(String email) throws Exception {
+		log.info("Sera consultado el cliente con email: " + email);
+		//clienteManager = new ClienteManager();
+		return clienteManager.findByEmail(email);
 	}
 
 }

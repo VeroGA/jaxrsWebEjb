@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.VentaMapper">
+
+	<resultMap type="Venta" id="resultVentas">
+		<result property="id" column="id" />
+		<result property="descripcion" column="descripcion" />
+		<result property="total" column="total" />
+		<result property="clienteId" column="cliente_id" />
+	</resultMap>
+
+	<select id="getVentaById" parameterType="Integer" resultType="Venta">
+		SELECT id, descripcion, total, cliente_id as clienteId
+		FROM venta
+		where id = #{id};
+	</select>
+
+	<insert id="newVenta" parameterType="Venta" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO venta(descripcion, total, cliente_id)
+		VALUES
+		(#{descripcion}, #{total}, #{clienteId});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			MAX(id) as id from venta;
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultVentas">
+		SELECT * FROM venta;
+	</select>
+
+	<update id="updateVenta" parameterType="Venta">
+		UPDATE venta
+		SET
+		descripcion = #{descripcion},
+		total = #{total},
+		cliente_id = #{clienteId}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deleteVenta" parameterType="Venta">
+		DELETE FROM venta
+		WHERE id = #{id};
+	</delete>
+
+</mapper>

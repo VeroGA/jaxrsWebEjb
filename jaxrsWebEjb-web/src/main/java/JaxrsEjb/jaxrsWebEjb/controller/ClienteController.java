@@ -46,7 +46,7 @@ public class ClienteController {
     }
 
     public void register() throws Exception {
-        try {
+        /*try {
         	System.out.println("Ejecutando register del ClienteController!! listo!!");
         	clienteServices.register(newCliente);
             facesContext.addMessage(null,
@@ -56,7 +56,7 @@ public class ClienteController {
             String errorMessage = getRootErrorMessage(e);
             FacesMessage m = new FacesMessage(FacesMessage.SEVERITY_ERROR, errorMessage, "Registration Unsuccessful");
             facesContext.addMessage(null, m);
-        }
+        }*/
     }
     
     public void realizarPago() throws Exception {

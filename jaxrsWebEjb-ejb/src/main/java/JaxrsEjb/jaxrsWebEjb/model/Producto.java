@@ -3,9 +3,11 @@ package JaxrsEjb.jaxrsWebEjb.model;
 import java.io.Serializable;
 //import java.util.List;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -29,7 +31,9 @@ public class Producto implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
 	private Long id;
 
 	@Column(name="nombre", length=30)
@@ -68,6 +72,15 @@ public class Producto implements Serializable {
 		this.stock = stock;
 		this.proveedor = proveedor;
 		this.descripcion = descripcion;
+	}
+	
+	public Producto(JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto p, Proveedor proveedor) {
+		this.id = Long.valueOf(p.getId().toString());
+		this.nombre = p.getNombre();
+		this.precio = p.getPrecio();
+		this.stock = p.getStock();
+		this.proveedor = proveedor;
+		this.descripcion = p.getDescripcion();
 	}
 
 	public Long getId() {

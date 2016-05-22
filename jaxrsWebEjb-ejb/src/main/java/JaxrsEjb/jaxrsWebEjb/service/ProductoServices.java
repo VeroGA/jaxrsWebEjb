@@ -1,27 +1,32 @@
 package JaxrsEjb.jaxrsWebEjb.service;
 
-import JaxrsEjb.jaxrsWebEjb.model.Producto;
-import JaxrsEjb.jaxrsWebEjb.model.Venta;
-import JaxrsEjb.jaxrsWebEjb.model.VentaDetalle;
+import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto;
+import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Venta;
+import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Compra;
+import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Proveedor;
+
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.CompraDetalleDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.CompraDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.ProductoDummy;
 import JaxrsEjb.jaxrsWebEjb.dummies.VentaDetalleDummy;
-import JaxrsEjb.jaxrsWebEjb.model.Cliente;
-import JaxrsEjb.jaxrsWebEjb.data.ProductoRepository;
+
+import JaxrsEjb.jaxrsWebEjb.mybatis.manager.ProductoManager;
+import JaxrsEjb.jaxrsWebEjb.mybatis.manager.ProveedorManager;
+import JaxrsEjb.jaxrsWebEjb.mybatis.manager.VentaManager;
+import JaxrsEjb.jaxrsWebEjb.mybatis.manager.CompraManager;
+
 import JaxrsEjb.jaxrsWebEjb.data.ProveedorRepository;
-import JaxrsEjb.jaxrsWebEjb.data.ClienteRepository;
 import JaxrsEjb.jaxrsWebEjb.data.ProductoDuplicadoRepository;
-import JaxrsEjb.jaxrsWebEjb.model.Compra;
-import JaxrsEjb.jaxrsWebEjb.model.CompraDetalle;
+
 import JaxrsEjb.jaxrsWebEjb.model.ProductoDuplicado;
-import JaxrsEjb.jaxrsWebEjb.model.Proveedor;
+
 import JaxrsEjb.jaxrsWebEjb.exceptions.ProductoDuplicadoException;
 import JaxrsEjb.jaxrsWebEjb.exceptions.VentaDetalleCantidadException;
 import JaxrsEjb.jaxrsWebEjb.exceptions.InsuficienciaStockVentaDetalleException;
 
 import javax.annotation.Resource;
+import javax.ejb.EJB;
 import javax.ejb.EJBContext;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.LocalBean;
@@ -33,9 +38,6 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceException;
 import javax.validation.ConstraintViolationException;
-
-//import org.hibernate.Criteria;
-//import org.hibernate.Session;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -62,12 +64,18 @@ public class ProductoServices {
 
 	@PersistenceContext
 	private EntityManager em;
-
-	@Inject
-	private ProductoRepository productoRepository;
-
-	@Inject
-	private ClienteRepository clienteRepository;
+	
+	@EJB
+	private ProductoManager productoManager;
+	
+	@EJB
+	private ProveedorManager proveedorManager;
+	
+	@EJB
+	private VentaManager ventaManager;
+	
+	@EJB
+	private CompraManager compraManager;
 
 	@Inject
 	private ProductoDuplicadoRepository productoDuplicadoRepository;
@@ -81,16 +89,17 @@ public class ProductoServices {
 
 		try {
 
-			if (!productoRepository.findByName(producto.getNombre())) {
+			if (!productoManager.isExistByName(producto.getNombre())) {
 				persistir(producto);
 			} else {
-				log.info("Lanzando la excepcion!.");
 				throw new ProductoDuplicadoException("Ocurrio una violacion de constraint unique!.");
 			}
 
 		} catch(ProductoDuplicadoException e) {
-			log.info("Lanzando la excepcion!.");
+			log.info("El producto ya existe, guardando duplicado!..");
 			guardarProductoDuplicado(producto);
+		} catch(Exception e) {
+			log.info("Producto constrain violation exception!. Exception: " + e.getMessage());
 		}
 
 		log.info("Transaccion exitosa!!.");
@@ -99,15 +108,18 @@ public class ProductoServices {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void persistir(Producto producto) throws Exception {
 		log.info("Guardando... " + producto.getNombre());
-
-		em.persist(producto);
+		productoManager.newProducto(producto);
+		//em.persist(producto);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteProducto(Producto producto) throws Exception {
 		log.info("Sera eliminado el cliente con nombre: " + producto.getNombre());
-		if (productoRepository.isExist(producto.getId())) {
-			em.remove(producto);
+		//if (productoRepository.isExist(producto.getId())) {
+
+		if (productoManager.isExist(producto.getId())) {
+			productoManager.deleteProducto(producto.getId());
+			//em.remove(producto);
 		} else {
 			log.info("El producto no existe!!.");
 		}
@@ -116,7 +128,7 @@ public class ProductoServices {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void realizarCompra(CompraDummy comprad) throws Exception {
-		log.info("Se realizo Compra en el ProductoServices de la compra: " + comprad.getDescripcion());
+		log.info("Se realizara la Compra en el ProductoServices de la compra: " + comprad.getDescripcion());
 
 		try {
 			compraMasiva(comprad);
@@ -133,28 +145,28 @@ public class ProductoServices {
 
 		List<CompraDetalleDummy> detalles = comprad.getCompra_detalle();
 
-		Compra compra = guardarCompra(comprad);
-
 		for (int i = 0; i < detalles.size(); i++) {
 
-			Producto producto = productoRepository.findById(detalles.get(i).getProducto_id());
-			comprarProducto(compra, producto, detalles.get(i).getCantidad());
+			Producto producto = productoManager.getProductoById(Integer.valueOf(detalles.get(i).getProducto_id().toString()));
+			comprarProducto(producto, detalles.get(i).getCantidad());
 
 		}
+		
+		guardarCompra(comprad);
 
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void comprarProducto(Compra compra, Producto producto, Integer cantidad) throws Exception {
-		System.out.println("Comprando producto: " + producto.getNombre());
+	public void comprarProducto(Producto producto, Integer cantidad) throws Exception {
+		
+		log.info("Comprando producto: " + producto.getNombre());
+		
 		if (producto != null) {
 			if (cantidad > 0) {
 
 				producto.setStock(producto.getStock() + cantidad);
-				em.merge(producto);
-
-				CompraDetalle compraDetalle = new CompraDetalle(cantidad, compra, producto);
-				guardarCompraDetalle(compraDetalle, compra);
+				productoManager.updateProducto(producto);
+				
 			} else {
 				log.info("Cantidad menor a cero!.");
 				throw new Exception("Cantidad invalida!.");
@@ -164,73 +176,70 @@ public class ProductoServices {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Compra guardarCompra(CompraDummy comprad) throws Exception {
+		
 		log.info("Guardando la compra " + comprad.getDescripcion() + "...");
-
-		Proveedor proveedor = proveedorRepository.findById(comprad.getProveedor_id());
-		Compra compra = new Compra(proveedor, comprad.getDescripcion(), 0);
-		compra = em.merge(compra);
-
+		
+		for(int i = 0; i<comprad.getCompra_detalle().size(); i++){
+			log.info("Extrayendo detalles del producto: " + productoManager.getProductoById(Integer.valueOf(comprad.getCompra_detalle().get(i).getProducto_id().toString())).getNombre()
+					+ "... con cantidad: " + comprad.getCompra_detalle().get(i).getCantidad() + ".");
+			
+			comprad.setTotal(comprad.getTotal() + comprad.getCompra_detalle().get(i).getCantidad() * productoManager.getProductoById(Integer.valueOf(comprad.getCompra_detalle().get(i).getProducto_id().toString())).getPrecio());
+		}
+		
+		Compra compra = new Compra(comprad);
+		
+		compraManager.newCompra(compra);
+		
 		log.info("Transaccion exitosa!!.");
 		return compra;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void guardarCompraDetalle(CompraDetalle compradetalle, Compra compra) throws Exception {
-		log.info("Guardando la compra detalle del producto: " + compradetalle.getProducto().getNombre()
-				+ "... con cantidad: " + compradetalle.getCantidad() + "...");
-
-		em.persist(compradetalle);
-		compra.setTotal(compra.getTotal() + compradetalle.getCantidad() * compradetalle.getProducto().getPrecio());
-		em.merge(compra);
-
-		log.info("Transaccion exitosa!!.");
-	}
-
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void realizarVenta(VentaDummy ventad) throws Exception {
-		log.info("Se realizo Venta en el ProductoServices de la venta: " + ventad.getDescripcion());
+		log.info("Se realizara la Venta en el ProductoServices de la venta: " + ventad.getDescripcion());
 
 		try {
 			ventaMasiva(ventad);
+			log.info("Venta realizada exitosamente!!.");
 		} catch (Exception e) {
 			log.info("Ocurrio un error: " + e.getMessage());
 			context.setRollbackOnly();
 		}
-
-		log.info("Venta realizada exitosamente!!.");
+		
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void ventaMasiva(VentaDummy ventad)
 			throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
+		
 		log.info("Se realizara la venta Masiva en el ProductoServices de la venta: " + ventad.getDescripcion());
 
 		List<VentaDetalleDummy> detalles = ventad.getVenta_detalle();
 
-		Venta venta = guardarVenta(ventad);
-
 		for (int i = 0; i < detalles.size(); i++) {
 
-			Producto producto = productoRepository.findById(detalles.get(i).getProducto_id());
-			venderProducto(venta, producto, detalles.get(i).getCantidad());
+			Producto producto = productoManager.getProductoById(Integer.valueOf(detalles.get(i).getProducto_id().toString()));
+			venderProducto(producto, detalles.get(i).getCantidad());
 
 		}
+
+		guardarVenta(ventad);
 
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void venderProducto(Venta venta, Producto producto, Integer cantidad)
+	public void venderProducto(Producto producto, Integer cantidad)
 			throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
-		System.out.println("Vendiendo producto: " + producto.getNombre());
+		
+		log.info("Vendiendo producto: " + producto.getNombre());
+		
 		if (producto != null) {
 			if (cantidad > 0) {
 				if (producto.getStock() >= cantidad) {
 
 					producto.setStock(producto.getStock() - cantidad);
-					em.merge(producto);
+					productoManager.updateProducto(producto);
 
-					VentaDetalle ventaDetalle = new VentaDetalle(cantidad, venta, producto);
-					guardarVentaDetalle(ventaDetalle, venta);
 				} else {
 					log.info("Se supero la cantidad en stock..");
 					throw new InsuficienciaStockVentaDetalleException(
@@ -246,35 +255,30 @@ public class ProductoServices {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public Venta guardarVenta(VentaDummy ventad) throws Exception {
 		log.info("Guardando la venta " + ventad.getDescripcion() + "...");
-
-		Cliente cliente = clienteRepository.findById(ventad.getCliente_id());
-		Venta venta = new Venta(ventad.getDescripcion(), cliente, 0);
-		venta = em.merge(venta);
+		
+		for(int i = 0; i<ventad.getVenta_detalle().size(); i++){
+			log.info("Extrayendo detalles del producto: " + productoManager.getProductoById(Integer.valueOf(ventad.getVenta_detalle().get(i).getProducto_id().toString())).getNombre()
+					+ "... con cantidad: " + ventad.getVenta_detalle().get(i).getCantidad() + ".");
+			
+			ventad.setTotal(ventad.getTotal() + ventad.getVenta_detalle().get(i).getCantidad() * productoManager.getProductoById(Integer.valueOf(ventad.getVenta_detalle().get(i).getProducto_id().toString())).getPrecio());
+		}
+		
+		Venta venta = new Venta(ventad);
+		
+		ventaManager.newVenta(venta);
 
 		log.info("Transaccion exitosa!!.");
 		return venta;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void guardarVentaDetalle(VentaDetalle ventadetalle, Venta venta) throws Exception {
-		log.info("Guardando la venta detalle del producto: " + ventadetalle.getProducto().getNombre()
-				+ "... con cantidad: " + ventadetalle.getCantidad() + "...");
-
-		em.persist(ventadetalle);
-		venta.setTotal(venta.getTotal() + ventadetalle.getCantidad() * ventadetalle.getProducto().getPrecio());
-		em.merge(venta);
-
-		log.info("Transaccion exitosa!!.");
-	}
-
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void guardarProductoDuplicado(Producto producto) throws Exception {
 		log.info("Guardando producto duplicado para producto: " + producto.getNombre());
 
-		ProductoDuplicado productoDuplicado = productoDuplicadoRepository.findByProducto(producto);
-		Producto productoOriginal = productoDuplicadoRepository.findProductoByName(producto.getNombre());
+		ProductoDuplicado productoDuplicado = productoDuplicadoRepository.findByProducto(producto.getNombre());
+		Producto productoOriginal = productoManager.getProductoByName(producto.getNombre());
 		if (productoDuplicado == null) {
-			productoDuplicado = new ProductoDuplicado(productoOriginal, 1);
+			productoDuplicado = new ProductoDuplicado(productoOriginal, 1, proveedorRepository.findById( Long.valueOf(producto.getProveedor().toString())) );
 			em.persist(productoDuplicado);
 		} else {
 			productoDuplicado.setCantidad(productoDuplicado.getCantidad() + 1);
@@ -304,14 +308,13 @@ public class ProductoServices {
 		while (br.ready()) {
 			linea = br.readLine();
 			cantidadTotal++;
-			System.out.println(linea);
+			log.info("Producto Json: " + linea);
 
 			try {
 				ProductoDummy productod = gson.fromJson(linea, ProductoDummy.class);
-				Proveedor proveedor = proveedorRepository.findById(productod.getProveedor_id());
-				System.out.println(productod.getNombre().trim());
-				Producto producto = new Producto(productod.getNombre().trim(), productod.getPrecio(),
-						productod.getStock(), proveedor, productod.getDescripcion());
+				Proveedor proveedor = proveedorManager.getProveedorById(Integer.valueOf(productod.getProveedor_id().toString()));
+				log.info("Producto procesado: " + productod.getNombre());
+				Producto producto = new Producto(productod.getNombre().trim(), productod.getPrecio(), productod.getStock(), productod.getDescripcion(), proveedor.getId());
 
 				try {
 

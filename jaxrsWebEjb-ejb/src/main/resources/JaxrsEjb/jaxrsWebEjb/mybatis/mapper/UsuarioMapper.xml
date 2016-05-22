@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.UsuarioMapper">
+
+	<resultMap type="Cliente" id="resultUsuarios">
+		<result property="id" column="id" />
+		<result property="username" column="username" />
+		<result property="password" column="password" />
+		<result property="rol" column="rol" />
+		<result property="token" column="token" />
+	</resultMap>
+
+	<select id="getUsuarioById" parameterType="Integer" resultType="Usuario">
+		SELECT id, username, password, rol, token 
+		FROM usuario where id = #{id};
+	</select>
+	
+	<select id="getUsuarioByToken" parameterType="String" resultType="Usuario">
+		SELECT * FROM usuario where token = #{token};
+	</select>
+	
+	<select id="getUsuarioByUsername" parameterType="String" resultType="Usuario">
+		SELECT * FROM usuario where username = #{username};
+	</select>
+
+	<insert id="newUsuario" parameterType="Usuario"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO usuario(username, password, rol, token) VALUES
+		(#{username}, #{password}, #{rol}, #{token});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			id as id from usuario where username = #{username};
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultUsuarios">
+		SELECT * FROM usuario;
+	</select>
+
+	<update id="updateUsuario" parameterType="Usuario">
+		UPDATE usuario
+		SET
+		username = #{username},
+		password = #{password},
+		rol = #{rol},
+		token = #{token}
+		WHERE id = #{id};
+	</update>
+	
+	<update id="updateUsuarioToken" parameterType="Usuario">
+		UPDATE usuario
+		SET
+		token = #{token}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deleteUsuario" parameterType="Usuario">
+		DELETE FROM usuario WHERE id = #{id};
+	</delete>
+
+</mapper>

@@ -138,6 +138,13 @@
 			<version>4.2.5.RELEASE</version>
 			<!-- <version>3.0.5.RELEASE</version> -->
 		</dependency>
+		
+		<!-- Dependencia para agregar opciones de HttpServletRequest en el proyecto -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>2.4</version>
+		</dependency>
 
 	</dependencies>
 

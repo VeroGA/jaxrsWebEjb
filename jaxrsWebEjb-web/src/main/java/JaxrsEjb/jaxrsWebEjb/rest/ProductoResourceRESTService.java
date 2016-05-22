@@ -25,6 +25,8 @@ import javax.ws.rs.core.Response;
 
 import org.jboss.resteasy.annotations.providers.multipart.PartType;
 
+import JaxrsEjb.jaxrsWebEjb.annotation.LoginRequired;
+import JaxrsEjb.jaxrsWebEjb.annotation.LoginRequired.Roles;
 import JaxrsEjb.jaxrsWebEjb.data.ProductoRepository;
 import JaxrsEjb.jaxrsWebEjb.model.Producto;
 import JaxrsEjb.jaxrsWebEjb.service.ProductoServices;
@@ -183,6 +185,7 @@ public class ProductoResourceRESTService {
 	@Path("/venta")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@LoginRequired(rol = Roles.VENT)
 	public Response realizarVenta(VentaDummy ventadummy) {
 
 		Response.ResponseBuilder builder = null;
@@ -208,6 +211,7 @@ public class ProductoResourceRESTService {
 	@Path("/compra")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
+	@LoginRequired(rol = Roles.COMP)
 	public Response realizarCompra(CompraDummy compradummy) {
 
 		Response.ResponseBuilder builder = null;

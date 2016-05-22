@@ -17,6 +17,7 @@ import javax.validation.Validator;
 import javax.ejb.EJB;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.DELETE;
@@ -31,6 +32,8 @@ import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Cliente;
 import JaxrsEjb.jaxrsWebEjb.service.ClienteServices;
 import JaxrsEjb.jaxrsWebEjb.service.ProductoServices;
 import JaxrsEjb.jaxrsWebEjb.model.Venta;
+import JaxrsEjb.jaxrsWebEjb.annotation.LoginRequired;
+import JaxrsEjb.jaxrsWebEjb.annotation.LoginRequired.Roles;
 import JaxrsEjb.jaxrsWebEjb.data.VentaRepository;
 import JaxrsEjb.jaxrsWebEjb.mybatis.bean.Pago;
 
@@ -48,6 +51,17 @@ public class ClienteResourceRESTService {
 
 	@EJB
 	private ProductoServices productoServices;
+	
+	@GET
+	@Path("/get")
+	@LoginRequired(rol = Roles.COMP)
+	public Response addUser(@HeaderParam("auth") String userAgent) {
+
+		return Response.status(200)
+			.entity("addUser is called, userAgent : " + userAgent)
+			.build();
+
+	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

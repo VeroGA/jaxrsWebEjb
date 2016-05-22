@@ -26,3 +26,7 @@ insert into cliente(id, name, email, phone_number) values (0, 'Jesus Aguilar', '
 insert into venta(id, cliente_id, total,descripcion) values (0, 0, 7000,'venta de prueba')
 insert into venta_detalle(id, venta_id, producto_id, cantidad) values (0, 0, 0, 1)
 
+insert into usuario(id, username, password, rol, token) values (0, 'lokolte', 'c13398ea1562d64855d063446d1107c3', 'COMP', '')
+
+insert into usuario(id, username, password, rol, token) values (1, 'lokolta', 'c13398ea1562d64855d063446d1107c3', 'VENT', '')
+

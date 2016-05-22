@@ -5,22 +5,24 @@
 <configuration>
 
 	<typeAliases>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Usuario'
+			alias='Usuario'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Cliente'
 			alias='Cliente'></typeAlias>
-			<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Proveedor'
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Proveedor'
 			alias='Proveedor'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Pago'
-		alias='Pago'></typeAlias>
+			alias='Pago'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto'
-		alias='Producto'></typeAlias>
+			alias='Producto'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Venta'
-		alias='Venta'></typeAlias>
+			alias='Venta'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.VentaDetalle'
-		alias='VentaDetalle'></typeAlias>
+			alias='VentaDetalle'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Compra'
-		alias='Compra'></typeAlias>
+			alias='Compra'></typeAlias>
 		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.CompraDetalle'
-		alias='CompraDetalle'></typeAlias>
+			alias='CompraDetalle'></typeAlias>
 	</typeAliases>
 
 	<environments default="desarrollo"> <!-- este nombre se usa al crear el connection factory -->
@@ -46,6 +48,7 @@
 	</environments>
 
 	<mappers>
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/UsuarioMapper.xml" />
 		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/ClienteMapper.xml" />
 		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/PagoMapper.xml" />
 		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/ProductoMapper.xml" />

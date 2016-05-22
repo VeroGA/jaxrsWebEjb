@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.ClienteMapper">
+
+	<resultMap type="Cliente" id="resultClientes">
+		<result property="id" column="id" />
+		<result property="name" column="name" />
+		<result property="email" column="email" />
+		<result property="phoneNumber" column="phone_number" />
+		<result property="saldoPagar" column="saldo_pagar" />
+	</resultMap>
+
+	<select id="getClienteById" parameterType="Integer" resultType="Cliente">
+		SELECT id, name, email, phone_number as phoneNumber, saldo_pagar as saldoPagar 
+		FROM cliente where id = #{id};
+	</select>
+
+	<select id="findByEmail" parameterType="String" resultType="Cliente">
+		SELECT id, name, email, phone_number as phoneNumber, saldo_pagar as saldoPagar
+		FROM cliente WHERE email = #{email};
+	</select>
+
+	<insert id="newCliente" parameterType="Cliente"
+		useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO cliente(name, email, phone_number, saldo_pagar) VALUES
+		(#{name}, #{email}, #{phoneNumber}, #{saldoPagar});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			id as id from cliente where email = #{email};
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultClientes">
+		SELECT * FROM cliente;
+	</select>
+
+	<update id="updateCliente" parameterType="Cliente">
+		UPDATE cliente
+		SET
+		name = #{name},
+		email = #{email},
+		phone_number = #{phoneNumber},
+		saldo_pagar = #{saldoPagar}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deleteCliente" parameterType="Cliente">
+		DELETE FROM cliente WHERE id = #{id};
+	</delete>
+
+</mapper>

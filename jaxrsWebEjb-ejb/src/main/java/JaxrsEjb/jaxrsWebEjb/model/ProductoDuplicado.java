@@ -2,8 +2,11 @@ package JaxrsEjb.jaxrsWebEjb.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
@@ -20,7 +23,9 @@ public class ProductoDuplicado implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue
+    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @Basic(optional = false)
+    @Column(name = "id")
 	private Long id;
 
 	@NotNull
@@ -35,8 +40,8 @@ public class ProductoDuplicado implements Serializable {
 		this.cantidad = 0;
 	}
 
-	public ProductoDuplicado(Producto producto, int cantidad) {
-		this.producto = producto;
+	public ProductoDuplicado(JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto producto, int cantidad, Proveedor proveedor) {
+		this.producto = new Producto (producto, proveedor);
 		this.cantidad = cantidad;
 	}
 

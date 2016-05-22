@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.PagoMapper">
+
+	<resultMap type="Pago" id="resultPagos">
+		<result property="id" column="id" />
+		<result property="observacion" column="observacion" />
+		<result property="cliente_id" column="cliente_id" />
+		<result property="venta_id" column="venta_id" />
+		<result property="monto" column="monto" />
+		<result property="fecha" column="fecha" />
+	</resultMap>
+
+	<select id="getPagoById" parameterType="Integer" resultType="Pago">
+		SELECT id, observacion, cliente_id, venta_id, monto, fecha
+		FROM pago
+		where id = #{id};
+	</select>
+
+	<insert id="newPago" parameterType="Pago" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO pago(observacion, cliente_id, venta_id, monto, fecha)
+		VALUES
+		(#{observacion}, #{cliente_id}, #{venta_id}, #{monto},
+		#{fecha});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			id as id from pago where cliente_id = #{cliente_id} and
+			venta_id = #{venta_id};
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultPagos">
+		SELECT * FROM pago;
+	</select>
+
+	<update id="updatePago" parameterType="Pago">
+		UPDATE pago
+		SET
+		observacion = #{observacion},
+		cliente_id = #{cliente_id},
+		venta_id = #{venta_id},
+		monto = #{monto},
+		fecha = #{fecha}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deletePago" parameterType="Pago">
+		DELETE FROM pago
+		WHERE id = #{id};
+	</delete>
+
+</mapper>

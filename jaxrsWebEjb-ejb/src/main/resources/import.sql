@@ -17,12 +17,12 @@
 
 -- You can use this file to load seed data into the database using SQL statements
 insert into proveedor(id, nombre, email, phone_number) values (0, 'John Smith', 'john.smith@mailinator.com', '2125551212')
-insert into producto(id, nombre, precio, proveedor_id,descripcion,stock) values (0, 'Ayudin', 7000, 0, 'lavandina no toxica', 2)
-insert into compra(id, proveedor_id,total,descripcion) values (0,0,14000,'Relleno stock')
+insert into producto(id, nombre, precio, proveedor_id, descripcion, stock) values (0, 'Ayudin', 7000, 0, 'lavandina no toxica', 2)
+insert into compra(id, proveedor_id,total,descripcion) values (0, 0, 14000,'Relleno stock')
 insert into compra_detalle(id, compra_id, producto_id, cantidad) values (0,0,0,2)
 
 insert into cliente(id, name, email, phone_number) values (0, 'Jesus Aguilar', 'chuchosoft.239@gmail.com', '0984172961')
 --insert into pago(id, observacion, cliente_id) values (0, 'Pago atrasado por factura', 0)
-insert into venta(id,total,descripcion) values (0,7000,'venta de prueba')
-insert into venta_detalle(id, venta_id, producto_id, cantidad) values (0,0,0,1)
+insert into venta(id, cliente_id, total,descripcion) values (0, 0, 7000,'venta de prueba')
+insert into venta_detalle(id, venta_id, producto_id, cantidad) values (0, 0, 0, 1)
 

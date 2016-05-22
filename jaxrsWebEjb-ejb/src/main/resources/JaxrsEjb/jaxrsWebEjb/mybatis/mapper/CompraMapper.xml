@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.CompraMapper">
+
+	<resultMap type="Compra" id="resultCompras">
+		<result property="id" column="id" />
+		<result property="descripcion" column="descripcion" />
+		<result property="total" column="total" />
+		<result property="proveedorId" column="proveedor_id" />
+	</resultMap>
+
+	<select id="getCompraById" parameterType="Integer" resultType="Compra">
+		SELECT id, descripcion, total, proveedor_id as proveedorId
+		FROM compra
+		where id = #{id};
+	</select>
+
+	<insert id="newCompra" parameterType="Compra" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO compra(descripcion, total, proveedor_id)
+		VALUES
+		(#{descripcion}, #{total}, #{proveedorId});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			MAX(id) as id from compra;
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultCompras">
+		SELECT * FROM compra;
+	</select>
+
+	<update id="updateCompra" parameterType="Compra">
+		UPDATE compra
+		SET
+		descripcion = #{descripcion},
+		total = #{total},
+		proveedor_id = #{proveedorId}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deleteCompra" parameterType="Compra">
+		DELETE FROM compra
+		WHERE id = #{id};
+	</delete>
+
+</mapper>

@@ -20,9 +20,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 import java.util.List;
 
 import JaxrsEjb.jaxrsWebEjb.model.ProductoDuplicado;
@@ -42,14 +39,14 @@ public class ProductoDuplicadoRepository {
 		return em.find(ProductoDuplicado.class, id);
 	}
 
-	public ProductoDuplicado findByProducto(Producto producto) {
+	public ProductoDuplicado findByProducto(String nombreProducto) {
 		TypedQuery<ProductoDuplicado> query = em.createQuery("SELECT p FROM ProductoDuplicado p WHERE p.producto.nombre = :nombre", ProductoDuplicado.class);
-		List<ProductoDuplicado> p = query.setParameter("nombre", producto.getNombre().trim()).getResultList();
+		List<ProductoDuplicado> p = query.setParameter("nombre", nombreProducto).getResultList();
 		
 		if(p.size()>0){
 			return p.get(0);
 		}else{
-			System.out.println("No existen Productos con este nombre");
+			System.out.println("No existen Productos Duplicados con este nombre!.");
 			return null;
 		}
 	}

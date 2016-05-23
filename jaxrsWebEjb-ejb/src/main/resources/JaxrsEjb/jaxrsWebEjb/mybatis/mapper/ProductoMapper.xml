@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.ProductoMapper">
+
+	<resultMap type="Pago" id="resultProductos">
+		<result property="id" column="id" />
+		<result property="descripcion" column="descripcion" />
+		<result property="nombre" column="nombre" />
+		<result property="precio" column="precio" />
+		<result property="stock" column="stock" />
+		<result property="proveedor_id" column="proveedorId" />
+	</resultMap>
+
+	<select id="getProductoById" parameterType="Integer" resultType="Producto">
+		SELECT id, descripcion, nombre, precio, stock, proveedor_id as proveedorId
+		FROM producto
+		where id = #{id};
+	</select>
+	
+	<select id="getProductoByName" parameterType="String" resultType="Producto">
+		SELECT id, descripcion, nombre, precio, stock, proveedor_id as proveedorId
+		FROM producto
+		where nombre = #{nombre};
+	</select>
+
+	<insert id="newProducto" parameterType="Producto" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO producto(descripcion, nombre, precio, stock, proveedor_id)
+		VALUES
+		(#{descripcion}, #{nombre}, #{precio}, #{stock}, #{proveedorId});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			id as id from producto where nombre = #{nombre};
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultProductos">
+		SELECT * FROM producto;
+	</select>
+
+	<update id="updateProducto" parameterType="Producto">
+		UPDATE producto
+		SET
+  		descripcion = #{descripcion},
+  		nombre = #{nombre},
+  		precio = #{precio},
+  		stock = #{stock},
+  		proveedor_id = #{proveedorId}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deleteProducto" parameterType="Producto">
+		DELETE FROM producto
+		WHERE id = #{id};
+	</delete>
+
+</mapper>

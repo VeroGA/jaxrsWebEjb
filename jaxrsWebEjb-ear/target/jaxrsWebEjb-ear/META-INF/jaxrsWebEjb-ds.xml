@@ -23,7 +23,7 @@
 		configurar en el wildfly para no configurar nada aqui y solo configurar el 
 		datasource en el persistense.xml -->
 
-	<datasource jndi-name="java:jboss/datasources/jaxrsWebEjbDS"
+	<!-- <datasource jndi-name="java:jboss/datasources/jaxrsWebEjbDS"
 		pool-name="jaxrsWebEjbPool" enabled="true" use-java-context="true">
 		<connection-url>jdbc:postgresql://localhost:5433/webdb</connection-url>
 		<driver>postgres</driver>
@@ -31,6 +31,6 @@
 			<user-name>postgres</user-name>
 			<password>postgres</password>
 		</security>
-	</datasource>
+	</datasource> -->
 </datasources>
  

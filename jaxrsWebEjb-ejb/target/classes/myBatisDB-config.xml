@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+	<typeAliases>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Usuario'
+			alias='Usuario'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Cliente'
+			alias='Cliente'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Proveedor'
+			alias='Proveedor'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Pago'
+			alias='Pago'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Producto'
+			alias='Producto'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Venta'
+			alias='Venta'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.VentaDetalle'
+			alias='VentaDetalle'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.Compra'
+			alias='Compra'></typeAlias>
+		<typeAlias type='JaxrsEjb.jaxrsWebEjb.mybatis.bean.CompraDetalle'
+			alias='CompraDetalle'></typeAlias>
+	</typeAliases>
+
+	<environments default="desarrollo"> <!-- este nombre se usa al crear el connection factory -->
+		<environment id="desarrollo">
+
+			<!-- esto es para manejar solo commits y rollback tambien puede tener 
+				valor MANAGED que deja que el contenedor jee haga todo por si mismo -->
+
+			<transactionManager type="MANAGED" />
+			<dataSource type="JNDI">
+				<property name="data_source" value="${data_source}" />
+
+				<!-- <property name="driver" value="${driver}" /> <property name="url" 
+					value="${url}" /> <property name="username" value="${username}" /> <property 
+					name="password" value="${password}" /> -->
+
+				<!-- de esta forma se configura el datasource en el proyecto, pero si 
+					no tengo este datasource en el jboss entonces configurar aqui diferente a 
+					antes -->
+
+			</dataSource>
+		</environment>
+	</environments>
+
+	<mappers>
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/UsuarioMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/ClienteMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/PagoMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/ProductoMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/VentaMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/VentaDetalleMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/CompraMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/CompraDetalleMapper.xml" />
+		<mapper resource="JaxrsEjb/jaxrsWebEjb/mybatis/mapper/ProveedorMapper.xml" />
+	</mappers>
+
+</configuration>

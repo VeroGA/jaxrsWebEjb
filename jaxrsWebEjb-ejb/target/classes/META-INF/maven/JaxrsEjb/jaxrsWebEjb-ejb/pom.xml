@@ -94,33 +94,58 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Agregando las dependencias para las transacciones 
-		<dependency>
-			<groupId>javax.transaction</groupId>
-			<artifactId>transaction-api</artifactId>
-			<version>1.1-rev-1</version>
-		</dependency>-->
-		
+		<!-- Agregando las dependencias para las transacciones <dependency> <groupId>javax.transaction</groupId> 
+			<artifactId>transaction-api</artifactId> <version>1.1-rev-1</version> </dependency> -->
+
 		<!-- Agregando las dependencias para las transacciones -->
 		<dependency>
 			<groupId>javax.transaction</groupId>
 			<artifactId>jta</artifactId>
 			<version>1.1</version>
 		</dependency>
-		
+
 		<!-- Agregando la dependencia para Gson para utilizar Json desde strings -->
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
 			<version>2.2.4</version>
 		</dependency>
-		
-		<!-- Agregando dependencias de hibernate 
+
+		<!-- Agregando dependencias de hibernate <dependency> <groupId>org.hibernate</groupId> 
+			<artifactId>hibernate-core</artifactId> <version>4.3.6.Final</version> </dependency> -->
+
+		<!-- Agregando la dependencia con myBatis, que funciona con postgres por 
+			lo que tambien agregamos aqui y anulamos del pom root -->
 		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-core</artifactId>
-			<version>4.3.6.Final</version>
-		</dependency>-->
+			<groupId>org.mybatis</groupId>
+			<artifactId>mybatis</artifactId>
+			<!-- <version>3.4.0</version> -->
+			<version>3.1.1</version>
+		</dependency>
+
+		<!-- Dependencia para postgresql -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>9.4.1208</version>
+		</dependency>
+
+		<!-- Agregando dependencia de SprintContext para poder leer dinamicamente 
+			las configuraciones de mybatis.properties -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+			<version>4.2.5.RELEASE</version>
+			<!-- <version>3.0.5.RELEASE</version> -->
+		</dependency>
+		
+		<!-- Dependencia para agregar opciones de HttpServletRequest en el proyecto -->
+		<dependency>
+		    <groupId>javax.servlet</groupId>
+		    <artifactId>servlet-api</artifactId>
+		    <version>2.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

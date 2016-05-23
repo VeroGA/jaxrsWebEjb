@@ -18,20 +18,20 @@ public class ProductoStateful {
 
 	private Iterator<Producto> iterator;
 
-	private boolean iniciado = false;
+	// private boolean iniciado = false;
 
-	public ProductoStateful() {
-		this.iniciado = false;
-	}
+	/*
+	 * public ProductoStateful() { this.iniciado = false; }
+	 */
 
 	public void iniciar() {
-		if (!this.iniciado) {
-			
-			TypedQuery<Producto> query = em.createQuery("SELECT p FROM Producto p", Producto.class);
-			this.iterator = query.getResultList().iterator();
-			
-			this.iniciado = true;
-		}
+		// if (!this.iniciado) {
+
+		TypedQuery<Producto> query = em.createQuery("SELECT p FROM Producto p", Producto.class);
+		this.iterator = query.getResultList().iterator();
+
+		// this.iniciado = true;
+		// }
 	}
 
 	public Producto nextProducto() {

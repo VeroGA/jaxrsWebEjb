@@ -20,7 +20,7 @@ PAYLOAD
 					"producto_id":0
 				},
 				{
-					"cantidad":-1,
+					"cantidad":1,
 					"producto_id":1
 				}
 			]
@@ -63,13 +63,11 @@ PAYLOAD
 	{}
 	
 2 - GET
-
 URL
 	http://localhost:8080/jaxrsWebEjb-web/rest/productos/session/id
 	
 PAYLOAD
 	{}
-	2 - GET
 
 3 - DELETE
 URL

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="JaxrsEjb.jaxrsWebEjb.mybatis.mapper.VentaDetalleMapper">
+
+	<resultMap type="Venta" id="resultVentasDetalle">
+		<result property="id" column="id" />
+		<result property="cantidad" column="cantidad" />
+		<result property="productoId" column="producto_id" />
+		<result property="ventaId" column="venta_id" />
+	</resultMap>
+
+	<select id="getVentaDetalleById" parameterType="Integer" resultType="VentaDetalle">
+		SELECT id, cantidad, producto_id as productoId, venta_id as ventaId
+		FROM venta_detalle
+		where id = #{id};
+	</select>
+
+	<insert id="newVentaDetalle" parameterType="VentaDetalle" useGeneratedKeys="true"
+		keyProperty="id">
+		INSERT INTO venta_detalle(cantidad, producto_id, venta_id)
+		VALUES
+		(#{cantidad}, #{productoId}, #{ventaId});
+		<selectKey resultType="Integer" keyProperty="id" order="AFTER">
+			SELECT
+			id as id from venta_detalle where producto_id = #{productoId} and venta_id = #{ventaId};
+		</selectKey>
+	</insert>
+
+	<select id="getAll" resultMap="resultVentasDetalle">
+		SELECT * FROM venta_detalle;
+	</select>
+	
+	<select id="getAllByVenta" parameterType="Venta" resultMap="resultVentasDetalle">
+		SELECT * FROM venta_detalle where venta_id = #{id};
+	</select>
+
+	<update id="updateVentaDetalle" parameterType="VentaDetalle">
+		UPDATE venta_detalle
+		SET
+		cantidad = #{cantidad},
+		producto_id = #{productoId},
+		venta_id = #{ventaId}
+		WHERE id = #{id};
+	</update>
+
+	<delete id="deleteVentaDetalle" parameterType="VentaDetalle">
+		DELETE FROM venta_detalle
+		WHERE id = #{id};
+	</delete>
+
+</mapper>

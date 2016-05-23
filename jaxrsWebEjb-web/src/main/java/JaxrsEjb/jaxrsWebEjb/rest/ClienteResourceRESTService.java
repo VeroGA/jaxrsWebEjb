@@ -51,17 +51,6 @@ public class ClienteResourceRESTService {
 
 	@EJB
 	private ProductoServices productoServices;
-	
-	@GET
-	@Path("/get")
-	@LoginRequired(rol = Roles.COMP)
-	public Response addUser(@HeaderParam("auth") String userAgent) {
-
-		return Response.status(200)
-			.entity("addUser is called, userAgent : " + userAgent)
-			.build();
-
-	}
 
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)

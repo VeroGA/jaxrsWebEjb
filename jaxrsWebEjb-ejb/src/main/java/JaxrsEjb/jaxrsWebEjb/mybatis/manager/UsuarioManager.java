@@ -192,11 +192,9 @@ public class UsuarioManager implements UsuarioMapper {
 		}
 	}
 	
-	public String login(String username, String password){
+	public Usuario login(String username, String password){
 		
 		Usuario usuario = null;
-		
-		String token = null;
 		
 		try {
 
@@ -205,7 +203,7 @@ public class UsuarioManager implements UsuarioMapper {
 			usuario = usuarioMapper.getUsuarioByUsername(username);
 			
 			if(usuario.getPassword().equals(encriptaEnMD5(password))){
-				token = this.crearToken(username);
+				usuario.setToken(this.crearToken(username));
 			}
 
 		} catch (Exception e) {
@@ -213,7 +211,7 @@ public class UsuarioManager implements UsuarioMapper {
 					+ " ##### Con nombre: " + e.getClass().getName());
 		}
 		
-		return token;
+		return usuario;
 	}
 	
 	public void logout(String token){

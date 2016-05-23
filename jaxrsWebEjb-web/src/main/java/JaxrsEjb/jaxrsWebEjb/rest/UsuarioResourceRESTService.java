@@ -76,17 +76,17 @@ public class UsuarioResourceRESTService {
 	@Path("/login")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public String login(Usuario usuario) throws Exception {
+	public Usuario login(Usuario usuario) throws Exception {
 		
 		if (!usuarioServices.isExist(usuario.getUsername())) {
 			throw new WebApplicationException(Response.Status.NOT_FOUND);
 		}
 		
-		String token  = usuarioServices.auntenticar(usuario.getUsername(), usuario.getPassword());
+		usuario  = usuarioServices.auntenticar(usuario.getUsername(), usuario.getPassword());
 		
-		log.info("Usuario logueado exitosamente..!  " + token);
+		log.info("Usuario logueado exitosamente..!  " + usuario.getToken());
 		
-		return token;
+		return usuario;
 	}
 
 	@POST

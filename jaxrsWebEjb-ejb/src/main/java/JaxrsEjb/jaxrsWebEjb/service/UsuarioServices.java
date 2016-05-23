@@ -59,11 +59,11 @@ public class UsuarioServices {
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public String auntenticar(String username, String password) {
+	public Usuario auntenticar(String username, String password) {
 		log.info("Logueando usuario: " + username);
-		String token = usuarioManager.login(username, password);
-		log.info("Se logueo al usuario con el token: " + token);
-		return token;
+		Usuario usuario = usuarioManager.login(username, password);
+		log.info("Se logueo al usuario con el token: " + usuario.getToken());
+		return usuario;
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)

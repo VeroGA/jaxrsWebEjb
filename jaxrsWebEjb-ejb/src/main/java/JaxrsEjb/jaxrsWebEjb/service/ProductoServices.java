@@ -109,17 +109,14 @@ public class ProductoServices {
 	public void persistir(Producto producto) throws Exception {
 		log.info("Guardando... " + producto.getNombre());
 		productoManager.newProducto(producto);
-		//em.persist(producto);
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void deleteProducto(Producto producto) throws Exception {
 		log.info("Sera eliminado el cliente con nombre: " + producto.getNombre());
-		//if (productoRepository.isExist(producto.getId())) {
 
 		if (productoManager.isExist(producto.getId())) {
 			productoManager.deleteProducto(producto.getId());
-			//em.remove(producto);
 		} else {
 			log.info("El producto no existe!!.");
 		}
@@ -158,10 +155,10 @@ public class ProductoServices {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void comprarProducto(Producto producto, Integer cantidad) throws Exception {
-		
-		log.info("Comprando producto: " + producto.getNombre());
-		
 		if (producto != null) {
+			
+			log.info("Comprando producto: " + producto.getNombre());
+			
 			if (cantidad > 0) {
 
 				producto.setStock(producto.getStock() + cantidad);
@@ -230,10 +227,10 @@ public class ProductoServices {
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public void venderProducto(Producto producto, Integer cantidad)
 			throws VentaDetalleCantidadException, InsuficienciaStockVentaDetalleException, Exception {
-		
-		log.info("Vendiendo producto: " + producto.getNombre());
-		
 		if (producto != null) {
+			
+			log.info("Vendiendo producto: " + producto.getNombre());
+			
 			if (cantidad > 0) {
 				if (producto.getStock() >= cantidad) {
 
@@ -298,7 +295,7 @@ public class ProductoServices {
 
 		direccion = direccion.replaceAll("\"", "");
 		archivo = new File(direccion);
-		String errores = new String();
+		StringBuilder errores = new StringBuilder();
 		fr = new FileReader(archivo);
 		br = new BufferedReader(fr);
 		Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
@@ -321,11 +318,9 @@ public class ProductoServices {
 					register(producto);
 
 				} catch (ProductoDuplicadoException e) {
-					errores = errores + "Error producto duplicado: " + cantidadTotal
-							+ " agregado a tabla de productos duplicados \n";
-
-					// guardarProductoDuplicado(producto);
-
+					errores.append("Error producto duplicado: ");
+					errores.append(cantidadTotal);
+					errores.append(" agregado a tabla de productos duplicados \n");
 					cantErrores++;
 				} catch (Exception e) {
 					log.info("Lanzando la excepcion!.");
@@ -334,7 +329,7 @@ public class ProductoServices {
 				}
 
 			} catch (JsonSyntaxException e) {
-				errores += "Error de sintaxis";
+				errores.append("Error de sintaxis");
 				cantErrores++;
 			} catch (Exception e) {
 				// context.setRollbackOnly();
@@ -345,13 +340,13 @@ public class ProductoServices {
 
 		log.info("TOTAL: " + cantidadTotal);
 		log.info("TOTAL EROORES: " + cantErrores);
-		log.info("Errores: " + errores);
+		log.info("Errores: " + errores.toString());
 
 		fr.close();
 
 		if (cantErrores > 0) {
 			context.setRollbackOnly();
-			log.info(errores);
+			log.info(errores.toString());
 		}
 		log.info("Carga Exitosa," + cantidadTotal + " productos cargados");
 	}

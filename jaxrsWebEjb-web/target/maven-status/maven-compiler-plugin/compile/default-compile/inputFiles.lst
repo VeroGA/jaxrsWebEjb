@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\ProductoResourceRESTService.java
 C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\util\WebResources.java
 C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\UsuarioResourceRESTService.java
@@ -6,12 +5,3 @@ C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\ja
 C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\ClienteResourceRESTService.java
 C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\controller\ClienteController.java
 C:\Users\Lokolta\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\JaxRsActivator.java
-=======
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\ClienteResourceRESTService.java
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\JaxRsActivator.java
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\ProductoResourceRESTService.java
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\controller\ClienteController.java
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\ProveedorResourceRESTService.java
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\rest\UsuarioResourceRESTService.java
-C:\Users\jaguilar\workspace\jaxrsWebEjb\jaxrsWebEjb-web\src\main\java\JaxrsEjb\jaxrsWebEjb\util\WebResources.java
->>>>>>> fac1dfbae088c32a29c30d53a54603d01b5f600e

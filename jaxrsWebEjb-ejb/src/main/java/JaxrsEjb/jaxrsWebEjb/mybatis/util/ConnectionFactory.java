@@ -32,7 +32,7 @@ public class ConnectionFactory {
 		try {
 			sqlSession.close();
 		} catch (Exception e) {
-			e.getMessage();
+			System.out.println(e.getMessage());
 		}
 		
 	}

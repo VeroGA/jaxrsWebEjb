@@ -11,11 +11,12 @@ Configuracion del entorno
 ---------------
 
 Para configurar el entorno se debe empezar por la BD, esta aplicacion en particular utiliza [MyBatis](http://www.mybatis.org/mybatis-3/getting-started.html) con postgres.
+
 1- [Configurar Postgres](http://developer-should-know.com/post/127065962382/installing-postgresql-and-adding-data-source-to) con Wildfly:
 
         $JBOSS_HOME/bin/jboss-cli.sh -c
         	module add --name=org.postgresql --slot=main --resources=/temp/postgresql-9.4.1208.jar --dependencies=javax.api,javax.transaction.api
-        				/subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgresql",driver-class-name=org.postgresql.Driver)
+        	/subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgresql",driver-class-name=org.postgresql.Driver)
 
 2- Luego de esto se debe configurar el datasource en el Wildfly con la consola web, o en el proyecto en:
 

@@ -19,7 +19,7 @@
 			source, this example data source is just for development and testing! -->
 		<!-- The datasource is deployed as <EAR>/META-INF/jaxrsWebEjb-ds.xml, you 
 			can find it in the source at ear/src/main/application/META-INF/jaxrsWebEjb-ds.xml -->
-		<jta-data-source>java:jboss/datasources/jaxrsWebEjb</jta-data-source>
+		<jta-data-source>java:jboss/datasources/jaxrsWebEjbDS</jta-data-source>
 		<!-- <jta-data-source>java:jboss/datasources/jaxrsWebEjbDS</jta-data-source> -->
 		<properties>
 			<!-- Properties for Hibernate -->

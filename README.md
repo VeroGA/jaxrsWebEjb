@@ -1,32 +1,35 @@
 jaxrsWebEjb: Example Using Multiple Java EE 7 Technologies Deployed as an EAR
 ==============================================================================================
-Author: Pete Muir
+Author: Jesus Aguilar
 Level: Intermediate
 Technologies: EAR, JPA
 Summary: Based on kitchensink, but deployed as an EAR
 Target Project: WildFly
 Source: <https://github.com/wildfly/quickstart/>
 
-What is it?
------------
-
-This is your project! It is a sample, deployable Maven 3 project to help you get your foot in the door developing with Java EE 7 on JBoss WildFly.
-
-This project is setup to allow you to create a compliant Java EE 7 application using JSF 2.2, CDI 1.1, EJB 3.2, JPA 2.1 and Bean Validation 1.1. It includes a persistence unit and some sample persistence and transaction code to introduce you to database access in enterprise Java.
-
-System requirements
--------------------
-
-All you need to build this project is Java 7.0 (Java SDK 1.7) or better, Maven 3.1 or better.
-
-The application this project produces is designed to be run on JBoss WildFly.
-
- 
-Configure Maven
+Configuracion del entorno
 ---------------
 
-If you have not yet done so, you must [Configure Maven](https://github.com/jboss-developer/jboss-developer-shared-resources/blob/master/guides/CONFIGURE_MAVEN.md) before testing the quickstarts.
+Para configurar el entorno se debe empezar por la BD, esta aplicacion en particular utiliza [MyBatis](http://www.mybatis.org/mybatis-3/getting-started.html) con postgres.
 
+1- [Configurar Postgres](http://developer-should-know.com/post/127065962382/installing-postgresql-and-adding-data-source-to) con Wildfly:
+
+        $JBOSS_HOME/bin/jboss-cli.sh -c
+        	module add --name=org.postgresql --slot=main --resources=/temp/postgresql-9.4.1208.jar --dependencies=javax.api,javax.transaction.api
+        	/subsystem=datasources/jdbc-driver=postgres:add(driver-name="postgres",driver-module-name="org.postgresql",driver-class-name=org.postgresql.Driver)
+
+2- Luego de esto se debe configurar el datasource en el Wildfly con la consola web, o en el proyecto en:
+
+        /jaxrsWebEjb-ejb/src/main/resources/META-INF/persistence.xml
+        <jta-data-source>java:jboss/datasources/DS</jta-data-source>
+
+3- Se debe configurar el datasource del MyBatis con la misma anteriormente configurada:
+
+        /jaxrsWebEjb-ejb/src/main/resources/mybatis.properties
+
+4- Configurar las entradas del jmeter para los archivos csv a tu $ECLIPSE_WORKSPACE y las direcciones de puerto para los HTTP request.
+
+5- Enjoy it..
 
 Start JBoss WildFly with the Web Profile
 -------------------------
@@ -34,9 +37,8 @@ Start JBoss WildFly with the Web Profile
 1. Open a command line and navigate to the root of the JBoss server directory.
 2. The following shows the command line to start the server with the web profile:
 
-        For Linux:   JBOSS_HOME/bin/standalone.sh
+        ux:   JBOSS_HOME/bin/standalone.sh
         For Windows: JBOSS_HOME\bin\standalone.bat
-
  
 Build and Deploy the Quickstart
 -------------------------
